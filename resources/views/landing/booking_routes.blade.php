@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Routes – VoyagePH</title>
+  <title>LOVO - Routes</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -482,7 +483,8 @@
   <div class="nav-wrap">
     <a class="logo" href="index.html">
       <div class="logo-mark">
-        <svg viewBox="0 0 24 24"><path d="M3 14V8a2 2 0 012-2h14a2 2 0 012 2v6M3 14h18M3 14l-1 3h20l-1-3M7 14v2m10-2v2M6 10h12"/></svg>
+        <!-- Font Awesome Icon for logo -->
+        <i class="fas fa-bus" style="font-size: 24px; color: #d4a843;"></i>
       </div>
       <span class="logo-wordmark">Voyage<span>PH</span></span>
     </a>
@@ -497,7 +499,10 @@
     </ul>
     <div class="nav-right">
       <button class="btn-login">Log In</button>
-      <button class="btn-book">Register</button>
+      <button class="btn-book" onclick="window.location='book-a-ticket.html'">
+        <!-- Font Awesome Icon for Book Now button -->
+        <i class="fas fa-ticket-alt" style="font-size: 14px;"></i> Book Now
+      </button>
     </div>
   </div>
 </nav>
@@ -546,11 +551,17 @@
 <div class="search-bar-wrap">
   <div class="search-bar-inner">
     <div class="sb-field" style="max-width:220px;">
-      <div class="sb-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+      <div class="sb-icon">
+        <!-- Font Awesome Search Icon -->
+        <i class="fas fa-search"></i>
+      </div>
       <input type="text" id="search-input" placeholder="Search city or route…" oninput="filterRoutes()"/>
     </div>
     <div class="sb-field" style="max-width:160px;">
-      <div class="sb-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 018 8c0 5.25-8 13-8 13S4 15.25 4 10a8 8 0 018-8z"/></svg></div>
+      <div class="sb-icon">
+        <!-- Font Awesome Location Icon -->
+        <i class="fas fa-map-marker-alt"></i>
+      </div>
       <select id="region-select" onchange="filterRoutes()">
         <option value="">All Regions</option>
         <option value="metro">Metro Manila</option>
@@ -560,7 +571,10 @@
       </select>
     </div>
     <div class="sb-field" style="max-width:160px;">
-      <div class="sb-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <div class="sb-icon">
+        <!-- Font Awesome Class Icon -->
+        <i class="fas fa-cogs"></i>
+      </div>
       <select id="class-select" onchange="filterRoutes()">
         <option value="">All Classes</option>
         <option value="Economy">Economy</option>
@@ -571,18 +585,16 @@
     <div class="sb-divider"></div>
     <div class="sb-results-label">Showing <strong id="result-count">24</strong> routes</div>
     <button class="sb-search-btn" onclick="filterRoutes()">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      Search Routes
+      <!-- Font Awesome Search Icon -->
+      <i class="fas fa-search"></i> Search Routes
     </button>
   </div>
 </div>
 
 <!-- ═══ ROUTES LAYOUT ═══ -->
 <div class="routes-layout">
-
   <!-- ── FILTER SIDEBAR ── -->
   <aside class="filters-panel">
-
     <!-- Duration -->
     <div class="filter-card reveal">
       <div class="fc-head">
@@ -596,7 +608,6 @@
         </div>
       </div>
     </div>
-
     <!-- Price -->
     <div class="filter-card reveal">
       <div class="fc-head">
@@ -610,7 +621,6 @@
         </div>
       </div>
     </div>
-
     <!-- Seat Class -->
     <div class="filter-card reveal">
       <div class="fc-head">
@@ -623,7 +633,6 @@
         <label class="filter-check"><input type="checkbox" checked onchange="filterRoutes()"><div class="fc-box"></div><span class="fc-label">Luxury</span><span class="fc-count">20</span></label>
       </div>
     </div>
-
     <!-- Amenities -->
     <div class="filter-card reveal">
       <div class="fc-head">
@@ -639,7 +648,6 @@
         <label class="filter-check"><input type="checkbox"><div class="fc-box"></div><span class="fc-label">Restroom on board</span></label>
       </div>
     </div>
-
     <!-- Departure Time -->
     <div class="filter-card reveal">
       <div class="fc-head">
@@ -653,7 +661,6 @@
         <label class="filter-check"><input type="checkbox"><div class="fc-box"></div><span class="fc-label">Evening (6 PM–12 AM)</span></label>
       </div>
     </div>
-
     <!-- Browse by Region -->
     <div class="filter-card reveal">
       <div class="fc-head"><h3>Browse by Region</h3></div>
@@ -682,20 +689,20 @@
         </div>
       </div>
     </div>
-
   </aside>
 
   <!-- ── ROUTES MAIN ── -->
   <div class="routes-main">
-
     <div class="list-controls">
       <div class="lc-count">Showing <strong id="main-count">24</strong> routes across the Philippines</div>
       <div class="view-toggle">
         <button class="vt-btn active" id="grid-btn" onclick="setView('grid')" title="Grid View">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <!-- Font Awesome Grid View Icon -->
+          <i class="fas fa-th"></i>
         </button>
         <button class="vt-btn" id="list-btn" onclick="setView('list')" title="List View">
-          <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <!-- Font Awesome List View Icon -->
+          <i class="fas fa-list"></i>
         </button>
       </div>
       <select class="sort-sel" id="sort-sel" onchange="sortRoutes()">
@@ -706,15 +713,12 @@
         <option value="alpha">Sort: A–Z</option>
       </select>
     </div>
-
     <div id="routes-container"></div>
-
     <div class="no-results" id="no-results">
       <div class="nr-icon">🗺️</div>
       <h3>No routes found</h3>
       <p>Try adjusting your search or filters to find available routes.</p>
     </div>
-
   </div>
 </div>
 
@@ -729,66 +733,77 @@
       </div>
     </div>
     <div class="ph-map-wrap">
-      <!-- Illustrated schematic map of Philippines -->
+      <!-- Font Awesome icons replacing SVGs -->
       <div class="ph-map-svg-wrap reveal">
-        <svg viewBox="0 0 400 520" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Luzon -->
-          <path d="M160 40 C140 38 120 45 112 60 C104 75 108 95 115 110 C120 120 115 135 120 148 C128 165 145 172 158 182 C168 190 170 205 180 215 C192 227 208 228 218 220 C228 212 232 198 228 185 C224 172 212 165 208 152 C204 140 210 125 218 115 C228 102 238 90 238 75 C238 58 228 44 215 40 C200 36 178 40 160 40Z" fill="rgba(184,145,42,.15)" stroke="rgba(184,145,42,.5)" stroke-width="1.5"/>
-          <!-- Luzon label -->
-          <text x="175" y="130" font-size="9" fill="rgba(212,168,67,.8)" font-family="serif" font-style="italic" font-weight="700">Luzon</text>
-          <!-- Mindoro -->
-          <path d="M150 245 C138 243 128 250 124 262 C120 274 126 288 136 294 C148 300 162 296 168 284 C174 272 168 254 155 247Z" fill="rgba(184,145,42,.1)" stroke="rgba(184,145,42,.35)" stroke-width="1.2"/>
-          <!-- Palawan -->
-          <path d="M88 295 C80 298 74 308 76 320 C78 332 88 340 100 342 C110 344 120 338 124 328 C130 316 126 302 116 296 C106 290 96 292 88 295Z" fill="rgba(184,145,42,.1)" stroke="rgba(184,145,42,.3)" stroke-width="1"/>
-          <!-- Samar/Leyte -->
-          <path d="M248 250 C238 248 228 255 226 266 C224 278 230 290 240 296 C250 302 264 298 270 288 C276 278 272 262 262 254 Z" fill="rgba(184,145,42,.12)" stroke="rgba(184,145,42,.4)" stroke-width="1.2"/>
-          <!-- Cebu/Bohol strip -->
-          <path d="M220 308 C210 306 202 314 202 326 C202 338 210 348 220 350 C232 352 242 344 244 332 C246 320 238 310 228 308Z" fill="rgba(184,145,42,.12)" stroke="rgba(184,145,42,.4)" stroke-width="1.2"/>
-          <!-- Negros -->
-          <path d="M184 285 C174 288 166 298 166 310 C166 325 174 336 184 340 C196 344 208 336 210 324 C213 310 207 294 197 288Z" fill="rgba(184,145,42,.1)" stroke="rgba(184,145,42,.35)" stroke-width="1"/>
-          <!-- Panay -->
-          <path d="M156 278 C148 280 140 288 140 300 C140 312 148 320 160 320 C172 320 180 312 180 298 C180 286 170 276 158 278Z" fill="rgba(184,145,42,.1)" stroke="rgba(184,145,42,.3)" stroke-width="1"/>
-          <!-- Visayas label -->
-          <text x="185" y="370" font-size="9" fill="rgba(212,168,67,.8)" font-family="serif" font-style="italic" font-weight="700">Visayas</text>
-          <!-- Mindanao -->
-          <path d="M155 395 C135 390 112 398 100 415 C88 432 90 455 104 470 C116 483 135 488 155 485 C175 482 192 472 204 458 C218 442 222 420 214 405 C206 390 185 396 170 398 C162 400 158 396 155 395Z M210 420 C220 418 232 425 238 436 C244 448 240 462 230 468 C220 474 208 470 202 460 C196 450 198 436 206 428Z" fill="rgba(184,145,42,.15)" stroke="rgba(184,145,42,.5)" stroke-width="1.5"/>
-          <!-- Mindanao label -->
-          <text x="155" y="445" font-size="9" fill="rgba(212,168,67,.8)" font-family="serif" font-style="italic" font-weight="700">Mindanao</text>
+        <!-- Luzon -->
+        <div class="map-icon" style="position: absolute; top: 120px; left: 160px; color: rgba(212,168,67,.8); font-size: 9px; font-family: serif; font-style: italic; font-weight: 700;">
+          <i class="fas fa-map"></i> Luzon
+        </div>
+        <!-- Mindoro -->
+        <div class="map-icon" style="position: absolute; top: 245px; left: 150px; color: rgba(212,168,67,.8); font-size: 9px; font-family: serif; font-style: italic; font-weight: 700;">
+          <i class="fas fa-map"></i> Mindoro
+        </div>
+        <!-- Palawan -->
+        <div class="map-icon" style="position: absolute; top: 295px; left: 88px; color: rgba(212,168,67,.8); font-size: 9px; font-family: serif; font-style: italic; font-weight: 700;">
+          <i class="fas fa-map"></i> Palawan
+        </div>
+        <!-- Samar/Leyte -->
+        <div class="map-icon" style="position: absolute; top: 250px; left: 248px; color: rgba(212,168,67,.8); font-size: 9px; font-family: serif; font-style: italic; font-weight: 700;">
+          <i class="fas fa-map"></i> Samar/Leyte
+        </div>
+        <!-- Cebu/Bohol -->
+        <div class="map-icon" style="position: absolute; top: 308px; left: 220px; color: rgba(212,168,67,.8); font-size: 9px; font-family: serif; font-style: italic; font-weight: 700;">
+          <i class="fas fa-map"></i> Cebu/Bohol
+        </div>
+        <!-- Negros -->
+        <div class="map-icon" style="position: absolute; top: 285px; left: 184px; color: rgba(212,168,67,.8); font-size: 9px; font-family: serif; font-style: italic; font-weight: 700;">
+          <i class="fas fa-map"></i> Negros
+        </div>
+        <!-- Panay -->
+        <div class="map-icon" style="position: absolute; top: 278px; left: 156px; color: rgba(212,168,67,.8); font-size: 9px; font-family: serif; font-style: italic; font-weight: 700;">
+          <i class="fas fa-map"></i> Panay
+        </div>
+        <!-- Visayas -->
+        <div class="map-icon" style="position: absolute; top: 370px; left: 185px; color: rgba(212,168,67,.8); font-size: 9px; font-family: serif; font-style: italic; font-weight: 700;">
+          <i class="fas fa-map"></i> Visayas
+        </div>
+        <!-- Mindanao -->
+        <div class="map-icon" style="position: absolute; top: 395px; left: 155px; color: rgba(212,168,67,.8); font-size: 9px; font-family: serif; font-style: italic; font-weight: 700;">
+          <i class="fas fa-map"></i> Mindanao
+        </div>
 
-          <!-- Route connection lines -->
-          <line x1="175" y1="162" x2="175" y2="262" stroke="rgba(184,145,42,.25)" stroke-width="1" stroke-dasharray="5,4"/>
-          <line x1="175" y1="290" x2="175" y2="398" stroke="rgba(184,145,42,.2)" stroke-width="1" stroke-dasharray="5,4"/>
-          <line x1="175" y1="175" x2="248" y2="258" stroke="rgba(184,145,42,.18)" stroke-width="1" stroke-dasharray="4,4"/>
+        <!-- Route connection lines (just a sample update) -->
+        <div class="route-line" style="position: absolute; top: 170px; left: 175px;">
+          <i class="fas fa-arrow-right"></i>
+        </div>
 
-          <!-- City dots -->
-          <!-- Manila -->
-          <circle cx="172" cy="178" r="5" fill="var(--gold)" opacity=".9"/>
-          <text x="180" y="180" font-size="8" fill="rgba(255,255,255,.7)" font-family="sans-serif">Manila</text>
-          <!-- Baguio -->
-          <circle cx="168" cy="108" r="4" fill="rgba(184,145,42,.8)" opacity=".9"/>
-          <text x="176" y="110" font-size="7.5" fill="rgba(255,255,255,.6)" font-family="sans-serif">Baguio</text>
-          <!-- Tuguegarao -->
-          <circle cx="200" cy="65" r="3.5" fill="rgba(184,145,42,.6)"/>
-          <text x="207" y="67" font-size="7" fill="rgba(255,255,255,.5)" font-family="sans-serif">Tuguegarao</text>
-          <!-- Legaspi -->
-          <circle cx="218" cy="208" r="3.5" fill="rgba(184,145,42,.6)"/>
-          <text x="225" y="210" font-size="7" fill="rgba(255,255,255,.5)" font-family="sans-serif">Legazpi</text>
-          <!-- Cebu -->
-          <circle cx="222" cy="328" r="4.5" fill="rgba(184,145,42,.8)"/>
-          <text x="230" y="330" font-size="7.5" fill="rgba(255,255,255,.6)" font-family="sans-serif">Cebu</text>
-          <!-- Davao -->
-          <circle cx="196" cy="458" r="4.5" fill="rgba(184,145,42,.8)"/>
-          <text x="202" y="460" font-size="7.5" fill="rgba(255,255,255,.6)" font-family="sans-serif">Davao</text>
-          <!-- Zamboanga -->
-          <circle cx="120" cy="452" r="3.5" fill="rgba(184,145,42,.6)"/>
-          <text x="82" y="454" font-size="7" fill="rgba(255,255,255,.5)" font-family="sans-serif">Zamboanga</text>
+        <!-- City dots -->
+        <div class="city-icon" style="position: absolute; top: 178px; left: 172px; color: var(--gold); font-size: 10px;">
+          <i class="fas fa-map-marker-alt"></i> Manila
+        </div>
+        <div class="city-icon" style="position: absolute; top: 108px; left: 168px; color: rgba(184,145,42,.8); font-size: 9px;">
+          <i class="fas fa-map-marker-alt"></i> Baguio
+        </div>
+        <div class="city-icon" style="position: absolute; top: 65px; left: 200px; color: rgba(184,145,42,.6); font-size: 8px;">
+          <i class="fas fa-map-marker-alt"></i> Tuguegarao
+        </div>
+        <div class="city-icon" style="position: absolute; top: 208px; left: 218px; color: rgba(184,145,42,.6); font-size: 8px;">
+          <i class="fas fa-map-marker-alt"></i> Legazpi
+        </div>
+        <div class="city-icon" style="position: absolute; top: 328px; left: 222px; color: rgba(184,145,42,.8); font-size: 9px;">
+          <i class="fas fa-map-marker-alt"></i> Cebu
+        </div>
+        <div class="city-icon" style="position: absolute; top: 458px; left: 196px; color: rgba(184,145,42,.8); font-size: 9px;">
+          <i class="fas fa-map-marker-alt"></i> Davao
+        </div>
+        <div class="city-icon" style="position: absolute; top: 452px; left: 120px; color: rgba(184,145,42,.6); font-size: 8px;">
+          <i class="fas fa-map-marker-alt"></i> Zamboanga
+        </div>
 
-          <!-- Animated pulse on Manila -->
-          <circle cx="172" cy="178" r="10" fill="none" stroke="rgba(184,145,42,.4)" stroke-width="1.5">
-            <animate attributeName="r" values="5;14;5" dur="2.5s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values=".8;0;.8" dur="2.5s" repeatCount="indefinite"/>
-          </circle>
-        </svg>
+        <!-- Animated pulse on Manila -->
+        <div class="pulse" style="position: absolute; top: 178px; left: 172px;">
+          <i class="fas fa-circle" style="color: rgba(184,145,42,.4); animation: pulseAnimation 2.5s infinite;"></i>
+        </div>
       </div>
 
       <!-- Destination list -->
@@ -849,7 +864,7 @@
           </div>
           <div class="dest-price">₱1,100<small>from</small></div>
         </div>
-        <a href="book-a-ticket.html" style="display:block; margin-top:6px; text-align:center; padding:13px; background:rgba(184,145,42,.12); border:1px solid rgba(184,145,42,.25); border-radius:10px; color:var(--gold-lt); font-size:.82rem; font-weight:700; text-decoration:none; transition:all .18s;" onmouseover="this.style.background='rgba(184,145,42,.2)'" onmouseout="this.style.background='rgba(184,145,42,.12)'">View All 45+ Destinations →</a>
+        <a href="book-a-ticket.html" class="view-all-destinations">View All 45+ Destinations →</a>
       </div>
     </div>
   </div>
@@ -876,7 +891,7 @@
       <div class="footer-brand">
         <a class="logo" href="index.html" style="filter:brightness(1.2)">
           <div class="logo-mark" style="border-color:rgba(212,168,67,.3)">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round"><path d="M3 14V8a2 2 0 012-2h14a2 2 0 012 2v6M3 14h18M3 14l-1 3h20l-1-3M7 14v2m10-2v2M6 10h12"/></svg>
+            <i class="fas fa-bus" style="color:#d4a843;"></i>
           </div>
           <span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:800;color:#fff;">Voyage<span style="color:#d4a843">PH</span></span>
         </a>
@@ -919,7 +934,10 @@
         <span class="pay-badge">GCash</span><span class="pay-badge">Maya</span><span class="pay-badge">Visa</span><span class="pay-badge">MC</span><span class="pay-badge">OTC</span>
       </div>
       <div class="footer-socials">
-        <a class="soc-btn" href="#">f</a><a class="soc-btn" href="#">𝕏</a><a class="soc-btn" href="#">in</a><a class="soc-btn" href="#">📷</a>
+        <a class="soc-btn" href="#"><i class="fab fa-facebook-f"></i></a>
+        <a class="soc-btn" href="#"><i class="fab fa-twitter"></i></a>
+        <a class="soc-btn" href="#"><i class="fab fa-linkedin-in"></i></a>
+        <a class="soc-btn" href="#"><i class="fab fa-instagram"></i></a>
       </div>
     </div>
   </div>

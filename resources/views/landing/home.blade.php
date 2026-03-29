@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>LOVO – Premium Bus Travel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -225,7 +226,9 @@
       padding: 28px;
     }
     .hv-main::before {
-      content: '🚌';
+      content: '\f207';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
       position: absolute; top: 28px; left: 28px;
       font-size: 2.5rem; opacity: .15;
       transform: scale(5); transform-origin: left top;
@@ -1002,10 +1005,11 @@
   <div class="nav-wrap">
     <a class="logo" href="#">
       <div class="logo-mark">
-        <svg viewBox="0 0 24 24"><path d="M3 14V8a2 2 0 012-2h14a2 2 0 012 2v6M3 14h18M3 14l-1 3h20l-1-3M7 14v2m10-2v2M6 10h12"/></svg>
+        <i class="fas fa-bus"></i>
       </div>
       <span class="logo-wordmark">Voyage<span>PH</span></span>
     </a>
+
     <ul class="nav-links">
       <li><a href="#hero" class="active">Home</a></li>
       <li><a href="{{ route('landing.ticket_booking') }}">Book a Ticket</a></li>
@@ -1015,31 +1019,49 @@
       <li><a href="{{ route('manage.bookings') }}">Manage Bookings</a></li>
       @endauth
     </ul>
+
     <div class="nav-right">
       @guest
-      <button class="btn-login" onclick="openLoginModal()">Login</button>
-      <button class="btn-book" onclick="openRegisterModal()">Register</button>
+        <button class="btn-login" onclick="openLoginModal()">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+        <button class="btn-book" onclick="openRegisterModal()">
+          <i class="fas fa-user-plus"></i> Register
+        </button>
       @else
-      @if(auth()->user()->role === 'admin')
-        <button class="btn-login" onclick="window.location.href='{{ route('admin.dashboard') }}'">Admin Dashboard</button>
-        <button class="btn-book" onclick="handleLogout()">Logout</button>
-      @else
-        <div class="nav-avatar" onclick="toggleUserMenu()">
-          {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-          <div class="nav-avatar-menu" id="userMenu">
-            <a href="{{ route('manage.bookings') }}">🎫 My Bookings</a>
-            <a href="#">👤 My Profile</a>
-            <a href="#">🔔 Notifications</a>
-            <div class="divider"></div>
-            <a href="#" onclick="handleLogout()">🚪 Sign Out</a>
+        @if(auth()->user()->role === 'admin')
+          <button class="btn-login" onclick="window.location.href='{{ route('admin.dashboard') }}'">
+            <i class="fas fa-chart-line"></i> Admin Dashboard
+          </button>
+          <button class="btn-book" onclick="handleLogout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        @else
+          <div class="nav-avatar" onclick="toggleUserMenu()">
+            {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+
+            <div class="nav-avatar-menu" id="userMenu">
+              <a href="{{ route('manage.bookings') }}">
+                <i class="fas fa-ticket-alt"></i> My Bookings
+              </a>
+              <a href="#">
+                <i class="fas fa-user"></i> My Profile
+              </a>
+              <a href="#">
+                <i class="fas fa-bell"></i> Notifications
+              </a>
+              <div class="divider"></div>
+              <a href="#" onclick="handleLogout()">
+                <i class="fas fa-door-open"></i> Sign Out
+              </a>
+            </div>
           </div>
-        </div>
-      @endif
+        @endif
       @endguest
     </div>
   </div>
 </nav>
-
+      
 
 <!-- ═══ HERO ═══ -->
 <section id="hero">
@@ -1061,8 +1083,13 @@
         VoyagePH delivers premium, safe, and on-time bus travel across Luzon and beyond. Book your seat online in minutes — no queues, no stress.
       </p>
       <div class="hero-actions">
-        <button class="cta-primary" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">🎫 Book a Ticket</button>
-        <button class="cta-secondary">View Routes →</button>
+        <button class="cta-primary" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">
+  <i class="fas fa-ticket-alt"></i> Book a Ticket
+</button>
+
+<button class="cta-secondary">
+  View Routes <i class="fas fa-arrow-right"></i>
+</button>
       </div>
       <div class="hero-stats">
         <div>
@@ -1152,22 +1179,22 @@
   <div class="hero-strip">
     <div class="strip-inner">
       <div class="strip-item">
-        <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <i class="fas fa-certificate"></i>
         <span>LTO-Accredited Operators</span>
       </div>
       <div class="strip-divider"></div>
       <div class="strip-item">
-        <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <i class="fas fa-clock"></i>
         <span>Real-Time Departure Tracking</span>
       </div>
       <div class="strip-divider"></div>
       <div class="strip-item">
-        <svg viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+        <i class="fas fa-credit-card"></i>
         <span>GCash · Maya · Card · OTC</span>
       </div>
       <div class="strip-divider"></div>
       <div class="strip-item">
-        <svg viewBox="0 0 24 24"><path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+        <i class="fas fa-ticket-alt"></i>
         <span>Instant E-Ticket on SMS & Email</span>
       </div>
     </div>
@@ -1188,10 +1215,10 @@
     </div>
     <div class="routes-grid">
       <div class="route-card reveal">
-        <span class="rc-tag tag-hot">🔥 Best Seller</span>
+        <span class="rc-tag tag-hot"><i class="fas fa-fire"></i> Best Seller</span>
         <div class="rc-cities">
           <span class="rc-city">Manila</span>
-          <div class="rc-line"><span>🚌</span></div>
+          <div class="rc-line"><i class="fas fa-bus"></i></div>
           <span class="rc-city">Baguio</span>
         </div>
         <div class="rc-info">
@@ -1202,10 +1229,10 @@
         </div>
       </div>
       <div class="route-card reveal">
-        <span class="rc-tag tag-new">✦ New Route</span>
+        <span class="rc-tag tag-new"><i class="fas fa-star"></i> New Route</span>
         <div class="rc-cities">
           <span class="rc-city">Cubao</span>
-          <div class="rc-line"><span>🚌</span></div>
+          <div class="rc-line"><i class="fas fa-bus"></i></div>
           <span class="rc-city">Vigan</span>
         </div>
         <div class="rc-info">
@@ -1219,7 +1246,7 @@
         <span class="rc-tag tag-sale">Sale 20% Off</span>
         <div class="rc-cities">
           <span class="rc-city">Pasay</span>
-          <div class="rc-line"><span>🚌</span></div>
+          <div class="rc-line"><i class="fas fa-bus"></i></div>
           <span class="rc-city">Laoag</span>
         </div>
         <div class="rc-info">
@@ -1230,10 +1257,10 @@
         </div>
       </div>
       <div class="route-card reveal">
-        <span class="rc-tag tag-hot">🔥 Popular</span>
+        <span class="rc-tag tag-hot"><i class="fas fa-fire"></i> Popular</span>
         <div class="rc-cities">
           <span class="rc-city">QC</span>
-          <div class="rc-line"><span>🚌</span></div>
+          <div class="rc-line"><i class="fas fa-bus"></i></div>
           <span class="rc-city">Tuguegarao</span>
         </div>
         <div class="rc-info">
@@ -1244,10 +1271,10 @@
         </div>
       </div>
       <div class="route-card reveal">
-        <span class="rc-tag tag-new">✦ New Route</span>
+        <span class="rc-tag tag-new"><i class="fas fa-star"></i> New Route</span>
         <div class="rc-cities">
           <span class="rc-city">Manila</span>
-          <div class="rc-line"><span>🚌</span></div>
+          <div class="rc-line"><i class="fas fa-bus"></i></div>
           <span class="rc-city">Ilocos Sur</span>
         </div>
         <div class="rc-info">
@@ -1261,7 +1288,7 @@
         <span class="rc-tag tag-sale">Sale 15% Off</span>
         <div class="rc-cities">
           <span class="rc-city">Manila</span>
-          <div class="rc-line"><span>🚌</span></div>
+          <div class="rc-line"><i class="fas fa-bus"></i></div>
           <span class="rc-city">Cabanatuan</span>
         </div>
         <div class="rc-info">
@@ -1283,38 +1310,47 @@
       <div>
         <div class="s-eyebrow reveal">Why VoyagePH</div>
         <h2 class="s-title reveal">The smarter way<br>to <em>ride</em></h2>
-        <p class="s-sub reveal">We're not just a bus company — we're your travel partner. Every detail is designed around your comfort, safety, and peace of mind.</p>
+        <p class="s-sub reveal">
+          We're not just a bus company — we're your travel partner. Every detail is designed around your comfort, safety, and peace of mind.
+        </p>
+
         <div class="why-features" style="margin-top:40px;">
+          
           <div class="wf-item reveal">
-            <div class="wf-icon">🛡️</div>
+            <div class="wf-icon"><i class="fas fa-shield-alt"></i></div>
             <div class="wf-body">
               <h3>Verified & LTO-Accredited</h3>
               <p>All our buses and drivers are fully licensed, regularly inspected, and insured under LTFRB standards. Your safety is never an afterthought.</p>
             </div>
           </div>
+
           <div class="wf-item reveal">
-            <div class="wf-icon">⚡</div>
+            <div class="wf-icon"><i class="fas fa-bolt"></i></div>
             <div class="wf-body">
               <h3>Instant QR E-Ticket</h3>
               <p>Get your ticket instantly via SMS and email after payment. No printing, no lines — just scan your QR code at the terminal and board.</p>
             </div>
           </div>
+
           <div class="wf-item reveal">
-            <div class="wf-icon">🔔</div>
+            <div class="wf-icon"><i class="fas fa-bell"></i></div>
             <div class="wf-body">
               <h3>Live Trip Notifications</h3>
               <p>Receive real-time alerts for departure reminders, gate changes, and delays — before you even leave home.</p>
             </div>
           </div>
+
           <div class="wf-item reveal">
-            <div class="wf-icon">💳</div>
+            <div class="wf-icon"><i class="fas fa-credit-card"></i></div>
             <div class="wf-body">
               <h3>Flexible Payment Options</h3>
               <p>Pay via GCash, Maya, credit/debit card, or over-the-counter — whatever works for you, with zero hidden fees.</p>
             </div>
           </div>
+
         </div>
       </div>
+
       <div class="why-numbers reveal">
         <div class="wn-card accent">
           <div class="wn-num">98<sup>%</sup></div>
@@ -1333,9 +1369,10 @@
           <div class="wn-label">Average passenger rating</div>
         </div>
       </div>
+
     </div>
   </div>
-</section>
+</section>  
 
 
 <!-- ═══ HOW IT WORKS ═══ -->
@@ -1344,41 +1381,49 @@
     <div style="text-align:center; max-width:520px; margin:0 auto;" class="reveal">
       <div class="s-eyebrow">Simple Process</div>
       <h2 class="s-title">Booked in <em>4 steps</em></h2>
-      <p class="s-sub" style="margin:0 auto;">From search to seat confirmation — the entire process takes less than 2 minutes.</p>
+      <p class="s-sub" style="margin:0 auto;">
+        From search to seat confirmation — the entire process takes less than 2 minutes.
+      </p>
     </div>
+
     <div class="steps-grid">
+      
       <div class="step-card reveal">
         <div class="step-circle">
-          🔍
+          <i class="fas fa-search"></i>
           <div class="step-num">1</div>
         </div>
         <h3>Search Your Trip</h3>
         <p>Enter your origin, destination, and travel date. See all available buses, times, and seat types instantly.</p>
       </div>
+
       <div class="step-card reveal">
         <div class="step-circle">
-          💺
+          <i class="fas fa-couch"></i>
           <div class="step-num">2</div>
         </div>
         <h3>Pick Your Seat</h3>
         <p>Choose from regular, recliner, or sleeper seats. View the seat map and pick exactly where you want to sit.</p>
       </div>
+
       <div class="step-card reveal">
         <div class="step-circle">
-          💳
+          <i class="fas fa-credit-card"></i>
           <div class="step-num">3</div>
         </div>
         <h3>Pay Securely</h3>
         <p>Complete payment via GCash, Maya, card, or OTC. All transactions are 256-bit SSL encrypted.</p>
       </div>
+
       <div class="step-card reveal">
         <div class="step-circle">
-          🎫
+          <i class="fas fa-ticket-alt"></i>
           <div class="step-num">4</div>
         </div>
         <h3>Board & Ride</h3>
         <p>Show your QR e-ticket at the terminal gate. Sit back, relax, and enjoy the journey.</p>
       </div>
+
     </div>
   </div>
 </section>
@@ -1397,30 +1442,30 @@
     </div>
     <div class="promos-grid">
       <div class="promo-card pc-1 reveal">
-        <div class="pc-bg">🚌</div>
+        <div class="pc-bg"><i class="fas fa-bus"></i></div>
         <div class="pc-body">
           <div class="pc-tag">Limited Offer</div>
           <div class="pc-title">Early Bird Fare —<br>Save up to 30%</div>
           <div class="pc-desc">Book 7 days in advance on any route and get up to 30% off your fare. Valid for all seat types.</div>
-          <div class="pc-code">🏷️ EARLYBIRD30</div>
+          <div class="pc-code"><i class="fas fa-ticket-alt"></i> EARLYBIRD30</div>
         </div>
       </div>
       <div class="promo-card pc-2 reveal">
-        <div class="pc-bg">❤️</div>
+        <div class="pc-bg"><i class="fas fa-heart"></i></div>
         <div class="pc-body">
           <div class="pc-tag">Student Promo</div>
           <div class="pc-title">Student Discount — 20% Off</div>
           <div class="pc-desc">Show your valid school ID at booking. Available on all weekday trips.</div>
-          <div class="pc-code">🎓 STUDENT20</div>
+          <div class="pc-code"><i class="fas fa-graduation-cap"></i> STUDENT20</div>
         </div>
       </div>
       <div class="promo-card pc-3 reveal">
-        <div class="pc-bg">✨</div>
+        <div class="pc-bg"><i class="fas fa-sparkles"></i></div>
         <div class="pc-body">
           <div class="pc-tag">Members Only</div>
           <div class="pc-title">VIP Member Perks</div>
           <div class="pc-desc">Register now and unlock exclusive fares, priority boarding, and free seat upgrades.</div>
-          <div class="pc-code">👑 JOIN FREE</div>
+          <div class="pc-code"><i class="fas fa-user-plus"></i> JOIN FREE</div>
         </div>
       </div>
     </div>
@@ -1568,28 +1613,44 @@
       </div>
 
       <!-- Right contact card -->
-      <div class="faq-right reveal">
-        <h3>Still have questions?</h3>
-        <p>Our support team is available 24/7 to help you with bookings, refunds, and anything else you need.</p>
-        <div class="faq-contacts">
-          <a href="#" class="faq-contact-item">
-            <div class="fci-icon">📞</div>
-            <div class="fci-label"><small>Hotline (24/7)</small><span>(02) 8888-VOYAGE</span></div>
-          </a>
-          <a href="#" class="faq-contact-item">
-            <div class="fci-icon">💬</div>
-            <div class="fci-label"><small>Live Chat</small><span>Chat with us now</span></div>
-          </a>
-          <a href="#" class="faq-contact-item">
-            <div class="fci-icon">📧</div>
-            <div class="fci-label"><small>Email Support</small><span>support@voyageph.com</span></div>
-          </a>
-          <a href="#" class="faq-contact-item">
-            <div class="fci-icon">📘</div>
-            <div class="fci-label"><small>Facebook Page</small><span>@VoyagePHOfficial</span></div>
-          </a>
-        </div>
+<div class="faq-right reveal">
+  <h3>Still have questions?</h3>
+  <p>Our support team is available 24/7 to help you with bookings, refunds, and anything else you need.</p>
+  
+  <div class="faq-contacts">
+    <a href="#" class="faq-contact-item">
+      <div class="fci-icon"><i class="fas fa-phone"></i></div>
+      <div class="fci-label">
+        <small>Hotline (24/7)</small>
+        <span>(02) 8888-VOYAGE</span>
       </div>
+    </a>
+
+    <a href="#" class="faq-contact-item">
+      <div class="fci-icon"><i class="fas fa-comments"></i></div>
+      <div class="fci-label">
+        <small>Live Chat</small>
+        <span>Chat with us now</span>
+      </div>
+    </a>
+
+    <a href="#" class="faq-contact-item">
+      <div class="fci-icon"><i class="fas fa-envelope"></i></div>
+      <div class="fci-label">
+        <small>Email Support</small>
+        <span>support@voyageph.com</span>
+      </div>
+    </a>
+
+    <a href="#" class="faq-contact-item">
+      <div class="fci-icon"><i class="fab fa-facebook"></i></div>
+      <div class="fci-label">
+        <small>Facebook Page</small>
+        <span>@VoyagePHOfficial</span>
+      </div>
+    </a>
+  </div>
+</div>
     </div>
   </div>
 </section>
@@ -1599,57 +1660,72 @@
 <footer>
   <div class="footer-inner">
     <div class="footer-top">
+      
       <div class="footer-brand">
         <a class="logo" href="#" style="filter:brightness(1.2)">
           <div class="logo-mark" style="border-color:rgba(212,168,67,.3)">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round"><path d="M3 14V8a2 2 0 012-2h14a2 2 0 012 2v6M3 14h18M3 14l-1 3h20l-1-3M7 14v2m10-2v2M6 10h12"/></svg>
+            <i class="fas fa-bus"></i>
           </div>
-          <span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-.3px;">Voyage<span style="color:#d4a843">PH</span></span>
+          <span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-.3px;">
+            Voyage<span style="color:#d4a843">PH</span>
+          </span>
         </a>
+
         <p>Philippines' premier bus company — connecting cities with comfort, safety, and reliability since 2018.</p>
+
         <div class="footer-newsletter">
           <p>Get promo alerts and travel updates:</p>
           <div class="nl-row">
             <input class="nl-input" type="email" placeholder="your@email.com"/>
-            <button class="nl-btn">Subscribe</button>
+            <button class="nl-btn">
+              <i class="fas fa-paper-plane"></i> Subscribe
+            </button>
           </div>
         </div>
       </div>
+
       <div class="footer-col">
         <h4>Travel</h4>
         <ul>
-          <li><a href="{{ route('landing.ticket_booking') }}">Book a Ticket</a></li>
-          <li><a href="#">View Routes</a></li>
-          <li><a href="#">Promos & Deals</a></li>
-          <li><a href="#">Group Booking</a></li>
-          <li><a href="#">Schedule</a></li>
+          <li><a href="{{ route('landing.ticket_booking') }}"><i class="fas fa-ticket-alt"></i> Book a Ticket</a></li>
+          <li><a href="#"><i class="fas fa-route"></i> View Routes</a></li>
+          <li><a href="#"><i class="fas fa-tags"></i> Promos & Deals</a></li>
+          <li><a href="#"><i class="fas fa-users"></i> Group Booking</a></li>
+          <li><a href="#"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
         </ul>
       </div>
+
       <div class="footer-col">
         <h4>Account</h4>
         <ul>
-          <li><a href="#">Register</a></li>
-          <li><a href="#">Log In</a></li>
-          <li><a href="#">My Bookings</a></li>
-          <li><a href="#">My Profile</a></li>
-          <li><a href="#">Notifications</a></li>
+          <li><a href="#"><i class="fas fa-user-plus"></i> Register</a></li>
+          <li><a href="#"><i class="fas fa-sign-in-alt"></i> Log In</a></li>
+          <li><a href="#"><i class="fas fa-ticket-alt"></i> My Bookings</a></li>
+          <li><a href="#"><i class="fas fa-user"></i> My Profile</a></li>
+          <li><a href="#"><i class="fas fa-bell"></i> Notifications</a></li>
         </ul>
       </div>
+
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="#">About VoyagePH</a></li>
-          <li><a href="#">Contact Us</a></li>
-          <li><a href="#">Help / FAQ</a></li>
-          <li><a href="#">Cancellation Policy</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#"><i class="fas fa-building"></i> About VoyagePH</a></li>
+          <li><a href="#"><i class="fas fa-envelope"></i> Contact Us</a></li>
+          <li><a href="#"><i class="fas fa-question-circle"></i> Help / FAQ</a></li>
+          <li><a href="#"><i class="fas fa-undo"></i> Cancellation Policy</a></li>
+          <li><a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+          <li><a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a></li>
         </ul>
       </div>
+
     </div>
 
     <div class="footer-bottom">
-      <p>© 2026 VoyagePH. All rights reserved. Made with ❤️ in the Philippines.</p>
+      <p>
+        © 2026 VoyagePH. All rights reserved. Made with 
+        <i class="fas fa-heart"></i> in the Philippines.
+      </p>
+
       <div class="footer-payments">
         <span style="font-size:.68rem;color:rgba(255,255,255,.25);margin-right:6px;">We accept</span>
         <span class="pay-badge">GCash</span>
@@ -1658,21 +1734,21 @@
         <span class="pay-badge">MC</span>
         <span class="pay-badge">OTC</span>
       </div>
+
       <div class="footer-socials">
-        <a class="soc-btn" href="#">f</a>
-        <a class="soc-btn" href="#">𝕏</a>
-        <a class="soc-btn" href="#">in</a>
-        <a class="soc-btn" href="#">📷</a>
+        <a class="soc-btn" href="#"><i class="fab fa-facebook-f"></i></a>
+        <a class="soc-btn" href="#"><i class="fab fa-x-twitter"></i></a>
+        <a class="soc-btn" href="#"><i class="fab fa-linkedin-in"></i></a>
+        <a class="soc-btn" href="#"><i class="fab fa-instagram"></i></a>
       </div>
     </div>
   </div>
 </footer>
-
 <!-- ═══ LOGIN MODAL ═══ -->
 <div class="modal-overlay" id="loginModal">
   <div class="modal">
     <button class="modal-close" onclick="closeLoginModal()">
-      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <i class="fas fa-times"></i>
     </button>
     <div class="modal-header">
       <div class="modal-logo">
@@ -1710,7 +1786,7 @@
 <div class="modal-overlay" id="registerModal">
   <div class="modal">
     <button class="modal-close" onclick="closeRegisterModal()">
-      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <i class="fas fa-times"></i>
     </button>
     <div class="modal-header">
       <div class="modal-logo">
@@ -1756,7 +1832,7 @@
 <div class="modal-overlay" id="forgotPasswordModal">
   <div class="modal">
     <button class="modal-close" onclick="closeForgotPasswordModal()">
-      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <i class="fas fa-times"></i>
     </button>
     <div class="modal-header">
       <div class="modal-logo">

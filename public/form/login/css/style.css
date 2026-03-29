@@ -296,9 +296,11 @@ body {
 /* Error States */
 .error-message {
     color: #dc2626;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     margin-top: 4px;
+    text-align: center;
+    display: block;
     opacity: 0;
     transform: translateY(-2px);
     transition: all 0.2s ease;
@@ -356,6 +358,81 @@ body {
     color: #64748b;
     font-size: 14px;
     font-weight: 500;
+}
+
+/* FontAwesome password toggle icons */
+.password-toggle i {
+    font-size: 16px;
+    color: #6b7280;
+    transition: color 0.2s ease;
+}
+
+.password-toggle:hover i {
+    color: #374151;
+}
+
+.password-toggle .eye-open,
+.password-toggle .eye-closed {
+    transition: opacity 0.2s ease;
+}
+
+/* Password fields on same line */
+.password-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.password-field {
+    flex: 1;
+    margin-bottom: 0 !important;
+}
+
+.password-field .form-input {
+    width: 100%;
+}
+
+/* Mobile responsive for password row */
+@media (max-width: 600px) {
+    .password-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+/* Hide scrollbar for better appearance */
+html, body, .login-container {
+    overflow: hidden !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+}
+
+html::-webkit-scrollbar, 
+body::-webkit-scrollbar, 
+.login-container::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    background: transparent !important;
+}
+
+html, body, .login-container {
+    -ms-overflow-style: none !important;  /* Internet Explorer */
+    scrollbar-width: none !important;     /* Firefox */
+}
+
+/* Ensure form doesn't overflow */
+.login-card {
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+.login-card::-webkit-scrollbar {
+    display: none;
+}
+
+.login-card {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 /* Mobile Responsive */

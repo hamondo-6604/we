@@ -411,11 +411,12 @@
 <body>
 
 <!-- ═══ NAVBAR ═══ -->
+<!-- ═══ NAVBAR ═══ -->
 <nav id="nav">
   <div class="nav-wrap">
-    <a href="#" class="logo">
+    <a class="logo" href="#">
       <div class="logo-mark">
-        <svg viewBox="0 0 24 24"><path d="M12 2 L4 7 L4 17 L12 22 L20 17 L20 7 Z"/><path d="M12 7 L12 17 M8 9.5 L16 9.5 M8 14.5 L16 14.5"/></svg>
+        <i class="fas fa-bus"></i>
       </div>
       <span class="logo-wordmark">Voyage<span>PH</span></span>
     </a>

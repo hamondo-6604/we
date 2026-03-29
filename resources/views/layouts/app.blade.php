@@ -16,17 +16,6 @@
 <div class="dash-container">
   {{-- Sidebar --}}
   @include('layouts.sidebar')
-
-  <div class="main">
-    {{-- Header / Topbar --}}
-    @include('layouts.header')
-
-    {{-- Main Content --}}
-    @yield('content')
-  </div>
-
-  {{-- Footer --}}
-  @include('layouts.footer')
 </div>
 </body>
 
