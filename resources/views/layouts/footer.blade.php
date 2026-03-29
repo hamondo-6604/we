@@ -37,7 +37,5 @@
     });
 </script>
 
-<!-- Vite JavaScript (App JS) -->
-@vite('resources/js/app.js') <!-- This will be injected by Vite, ensure this is after other custom scripts -->
 </body>
 </html>
