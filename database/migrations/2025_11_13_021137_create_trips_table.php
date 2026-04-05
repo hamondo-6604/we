@@ -6,35 +6,49 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-  public function up(): void
-  {
-    Schema::create('trips', function (Blueprint $table) {
-      $table->id();
+    public function up(): void
+    {
+        Schema::create('trips', function (Blueprint $table) {
+            $table->id();
 
-      // foreign keys (optional – adjust depending on your system)
-      $table->unsignedBigInteger('route_id')->nullable();
-      $table->unsignedBigInteger('bus_id')->nullable();
+            $table->foreignId('route_id')
+                ->nullable()
+                ->constrained('routes')
+                ->onDelete('set null');
 
-      $table->string('trip_code')->unique()->nullable();
-      $table->date('trip_date');
-      $table->time('departure_time');
-      $table->time('arrival_time')->nullable();
+            $table->foreignId('bus_id')
+                ->nullable()
+                ->constrained('buses')
+                ->onDelete('set null');
 
-      $table->integer('available_seats')->default(0);
-      $table->decimal('fare', 10, 2)->nullable();
+            // Driver assigned to this trip
+            $table->foreignId('driver_id')
+                ->nullable()
+                ->constrained('drivers')
+                ->onDelete('set null');
 
-      $table->boolean('is_active')->default(true);
+            $table->string('trip_code')->unique()->nullable();
+            $table->date('trip_date');
 
-      $table->timestamps();
+            // FIX: was time() — incompatible with model's datetime cast.
+            // Using timestamp so Carbon works correctly.
+            $table->timestamp('departure_time');
+            $table->timestamp('arrival_time')->nullable();
 
-      // relationships
-      $table->foreign('route_id')->references('id')->on('routes')->onDelete('set null');
-      $table->foreign('bus_id')->references('id')->on('buses')->onDelete('set null');
-    });
-  }
+            $table->integer('available_seats')->default(0);
+            $table->decimal('fare', 10, 2)->nullable();
 
-  public function down(): void
-  {
-    Schema::dropIfExists('trips');
-  }
+            $table->enum('status', ['scheduled', 'ongoing', 'completed', 'cancelled'])
+                ->default('scheduled');
+
+            $table->boolean('is_active')->default(true);
+            $table->text('notes')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('trips');
+    }
 };

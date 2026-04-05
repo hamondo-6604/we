@@ -5,90 +5,104 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany; // <-- ADD THIS
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
-  use HasFactory, Notifiable;
+    use HasFactory, Notifiable;
 
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var array<int, string>
-   */
-  protected $fillable = [
-    'name',
-    'email',
-    'password',
-    'role',
-    'status',
-    'phone',
-  ];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role',
+        'status',
+        'phone',
+        'profile_photo',
+    ];
 
-  /**
-   * The attributes that should be hidden for serialization.
-   *
-   * @var array<int, string>
-   */
-  protected $hidden = [
-    'password',
-    'remember_token',
-  ];
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
-  /**
-   * The attributes that should be cast.
-   *
-   * @var array<string, string>
-   */
-  protected $casts = [
-    'email_verified_at' => 'datetime',
-    'password' => 'hashed',
-  ];
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password'          => 'hashed',
+    ];
 
-  /**
-   * Check if the user is an admin.
-   *
-   * @return bool
-   */
-  public function isAdmin(): bool
-  {
-    return $this->role === 'admin';
-  }
+    // ------------------------------------------------------------------
+    // ROLE HELPERS
+    // ------------------------------------------------------------------
 
-  /**
-   * Check if the user is a driver.
-   *
-   * @return bool
-   */
-  public function isDriver(): bool
-  {
-    return $this->role === 'driver';
-  }
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 
-  /**
-   * Check if the user is a customer.
-   *
-   * @return bool
-   */
-  public function isCustomer(): bool
-  {
-    return $this->role === 'customer';
-  }
+    public function isDriver(): bool
+    {
+        return $this->role === 'driver';
+    }
 
-  // ------------------------------------------------------------------
-  // ELOQUENT RELATIONSHIPS
-  // ------------------------------------------------------------------
+    public function isCustomer(): bool
+    {
+        return $this->role === 'customer';
+    }
 
-  /**
-   * Get the bookings associated with the user.
-   * A User has many Bookings (One-to-Many relationship).
-   *
-   * @return \Illuminate\Database\Eloquent\Relations\HasMany
-   */
-  public function bookings(): HasMany // <-- ADD THIS METHOD
-  {
-    // Assumes the Booking model exists at App\Models\Booking
-    // and the 'bookings' table has a 'user_id' foreign key.
-    return $this->hasMany(Booking::class);
-  }
+    public function isBlocked(): bool
+    {
+        return $this->status === 'blocked';
+    }
+
+    // ------------------------------------------------------------------
+    // RELATIONSHIPS
+    // ------------------------------------------------------------------
+
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    /**
+     * Driver profile — only populated when role = 'driver'.
+     */
+    public function driver(): HasOne
+    {
+        return $this->hasOne(Driver::class);
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function feedback(): HasMany
+    {
+        return $this->hasMany(Feedback::class);
+    }
+
+    /**
+     * Fine-grained roles via pivot (optional — alongside the enum).
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
+
+    // ------------------------------------------------------------------
+    // SCOPES
+    // ------------------------------------------------------------------
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    public function scopeByRole($query, string $role)
+    {
+        return $query->where('role', $role);
+    }
 }

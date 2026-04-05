@@ -3,59 +3,56 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
- */
 class UserFactory extends Factory
 {
-  protected $model = \App\Models\User::class;
+    public function definition(): array
+    {
+        return [
+            'name'              => fake()->name(),
+            'email'             => fake()->unique()->safeEmail(),
+            'phone'             => fake()->numerify('09#########'),
+            'password'          => Hash::make('password'),  // default password for seeding
+            'role'              => 'customer',
+            'status'            => 'active',
+            'profile_photo'     => null,
+            'email_verified_at' => now(),
+            'remember_token'    => Str::random(10),
+        ];
+    }
 
-  public function definition(): array
-  {
-    return [
-      'name' => $this->faker->name(),
-      'email' => $this->faker->unique()->safeEmail(),
-      'phone' => $this->faker->optional()->phoneNumber(),
-      'password' => bcrypt('password'), // default password for all seeded users
-      'role' => $this->faker->randomElement(['admin', 'driver', 'customer']),
-      'status' => $this->faker->randomElement(['active', 'blocked']),
-      'email_verified_at' => now(),
-      'remember_token' => Str::random(10),
-    ];
-  }
+    // ------------------------------------------------------------------
+    // STATES
+    // ------------------------------------------------------------------
 
-  /**
-   * State for admin users.
-   */
-  public function admin(): static
-  {
-    return $this->state(fn () => [
-      'role' => 'admin',
-      'status' => 'active',
-    ]);
-  }
+    public function admin(): static
+    {
+        return $this->state(fn () => [
+            'role'  => 'admin',
+            'email' => 'admin@busbook.com',
+            'name'  => 'System Admin',
+        ]);
+    }
 
-  /**
-   * State for driver users.
-   */
-  public function driver(): static
-  {
-    return $this->state(fn () => [
-      'role' => 'driver',
-      'status' => 'active',
-    ]);
-  }
+    public function driver(): static
+    {
+        return $this->state(fn () => ['role' => 'driver']);
+    }
 
-  /**
-   * State for customer users.
-   */
-  public function customer(): static
-  {
-    return $this->state(fn () => [
-      'role' => 'customer',
-      'status' => 'active',
-    ]);
-  }
+    public function customer(): static
+    {
+        return $this->state(fn () => ['role' => 'customer']);
+    }
+
+    public function blocked(): static
+    {
+        return $this->state(fn () => ['status' => 'blocked']);
+    }
+
+    public function unverified(): static
+    {
+        return $this->state(fn () => ['email_verified_at' => null]);
+    }
 }

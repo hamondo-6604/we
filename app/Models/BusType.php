@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BusType extends Model
 {
@@ -16,19 +18,26 @@ class BusType extends Model
         'description',
     ];
 
-    // Relationships
-    
+    // ------------------------------------------------------------------
+    // RELATIONSHIPS
+    // ------------------------------------------------------------------
 
-    // BusType belongs to SeatLayout
-    public function seatLayout()
-{
-    return $this->belongsTo(\App\Models\SeatLayout::class, 'seat_layout_id');
-}
+    public function seatLayout(): BelongsTo
+    {
+        return $this->belongsTo(SeatLayout::class, 'seat_layout_id');
+    }
 
-
-    // BusType has many buses
-    public function buses()
+    public function buses(): HasMany
     {
         return $this->hasMany(Bus::class);
+    }
+
+    // ------------------------------------------------------------------
+    // SCOPES
+    // ------------------------------------------------------------------
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
     }
 }

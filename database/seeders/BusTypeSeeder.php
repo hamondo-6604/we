@@ -8,35 +8,48 @@ use Illuminate\Database\Seeder;
 
 class BusTypeSeeder extends Seeder
 {
-public function run(): void
-{
-// Ensure you have some seat layouts to link
-$layouts = SeatLayout::all();
+    public function run(): void
+    {
+        $standard = SeatLayout::where('layout_name', '10x4 Standard')->first();
+        $express  = SeatLayout::where('layout_name', '12x4 Express')->first();
+        $deluxe   = SeatLayout::where('layout_name', '8x4 Deluxe')->first();
+        $mini     = SeatLayout::where('layout_name', '6x2 Mini')->first();
 
-if ($layouts->isEmpty()) {
-// Create default layouts if none exist
-SeatLayout::factory()->count(3)->create();
-$layouts = SeatLayout::all();
-}
+        $types = [
+            [
+                'type_name'      => 'Ordinary',
+                'seat_layout_id' => $standard?->id,
+                'status'         => 'active',
+                'description'    => 'Standard non-aircon bus. Basic seating, affordable fares.',
+            ],
+            [
+                'type_name'      => 'Aircon',
+                'seat_layout_id' => $standard?->id,
+                'status'         => 'active',
+                'description'    => 'Air-conditioned bus with standard seating.',
+            ],
+            [
+                'type_name'      => 'Express',
+                'seat_layout_id' => $express?->id,
+                'status'         => 'active',
+                'description'    => 'High-capacity express bus with limited stops.',
+            ],
+            [
+                'type_name'      => 'Deluxe',
+                'seat_layout_id' => $deluxe?->id,
+                'status'         => 'active',
+                'description'    => 'Deluxe aircon bus with extra legroom and reclining seats.',
+            ],
+            [
+                'type_name'      => 'Mini Bus',
+                'seat_layout_id' => $mini?->id,
+                'status'         => 'active',
+                'description'    => 'Small minibus for short-distance or feeder routes.',
+            ],
+        ];
 
-// Create 5 bus types with random seat layouts linked
-BusType::factory(5)->create([
-'seat_layout_id' => $layouts->random()->id,
-]);
-
-// Create specific bus types with linked seat layouts
-BusType::factory()->create([
-'type_name' => 'Express Coach',
-'status' => 'active',
-'description' => 'Comfortable express coach',
-'seat_layout_id' => $layouts->random()->id,
-]);
-
-BusType::factory()->create([
-'type_name' => 'City Mini Bus',
-'status' => 'active',
-'description' => 'Compact express',
-'seat_layout_id' => $layouts->random()->id,
-]);
-}
+        foreach ($types as $type) {
+            BusType::updateOrCreate(['type_name' => $type['type_name']], $type);
+        }
+    }
 }

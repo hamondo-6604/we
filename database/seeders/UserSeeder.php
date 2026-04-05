@@ -2,25 +2,65 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Models\Driver;
 use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-  public function run(): void
-  {
-    // ------------------------------------------------------------------
-    // Create a specific admin user
-    // ------------------------------------------------------------------
-    User::factory()->admin()->create([
-      'name' => 'Admin User',
-      'email' => 'admin@example.com',
-      'password' => bcrypt('admin123'), // specific password
-    ]);
+    public function run(): void
+    {
+        // ── Fixed accounts ──────────────────────────────────────────────
 
-    // ------------------------------------------------------------------
-    // Create additional random users
-    // ------------------------------------------------------------------
-    User::factory(10)->create();
-  }
+        $admin = User::updateOrCreate(
+            ['email' => 'admin@busbook.com'],
+            [
+                'name'              => 'System Admin',
+                'phone'             => '09171234567',
+                'password'          => Hash::make('password'),
+                'role'              => 'admin',
+                'status'            => 'active',
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // A fixed test customer
+        User::updateOrCreate(
+            ['email' => 'customer@busbook.com'],
+            [
+                'name'              => 'Juan dela Cruz',
+                'phone'             => '09181234567',
+                'password'          => Hash::make('password'),
+                'role'              => 'customer',
+                'status'            => 'active',
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // A fixed test driver user (driver profile created in DriverSeeder)
+        User::updateOrCreate(
+            ['email' => 'driver@busbook.com'],
+            [
+                'name'              => 'Pedro Santos',
+                'phone'             => '09191234567',
+                'password'          => Hash::make('password'),
+                'role'              => 'driver',
+                'status'            => 'active',
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // ── Random customers ─────────────────────────────────────────────
+        User::factory()
+            ->count(20)
+            ->customer()
+            ->create();
+
+        // ── Random driver users (driver profiles created in DriverSeeder) ─
+        User::factory()
+            ->count(8)
+            ->driver()
+            ->create();
+    }
 }

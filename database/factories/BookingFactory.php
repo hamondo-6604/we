@@ -2,52 +2,91 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Booking;
-use App\Models\User;
-use App\Models\Bus;
-use App\Models\BusRoute;
-use App\Models\Trip;
+use App\Models\Promotion;
 use App\Models\Seat;
+use App\Models\Trip;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class BookingFactory extends Factory
 {
-  protected $model = Booking::class;
+    public function definition(): array
+    {
+        $trip      = Trip::inRandomOrder()->first() ?? Trip::factory()->create();
+        $seat      = Seat::where('bus_id', $trip->bus_id)
+                         ->where('status', 'available')
+                         ->inRandomOrder()
+                         ->first();
+        $baseFare      = $trip->fare ?? fake()->randomFloat(2, 150, 1500);
+        $discountAmount = 0.00;
 
-  public function definition(): array
-  {
-    $user = User::inRandomOrder()->first();
-    $bus = Bus::inRandomOrder()->first();
-    $route = BusRoute::inRandomOrder()->first();
-
-    // Ensure these exist
-    if (!$user || !$bus || !$route) {
-      throw new \Exception('Cannot create booking: missing User, Bus, or Route records.');
+        return [
+            'user_id'              => User::customer()->inRandomOrder()->first()?->id
+                                      ?? User::factory()->customer(),
+            'trip_id'              => $trip->id,
+            'seat_id'              => $seat?->id,
+            'promotion_id'         => null,
+            'seat_number'          => $seat?->seat_number ?? fake()->bothify('#?'),
+            'status'               => 'confirmed',
+            'base_fare'            => $baseFare,
+            'discount_amount'      => $discountAmount,
+            'amount_paid'          => $baseFare - $discountAmount,
+            'payment_status'       => 'paid',
+            'booking_reference'    => 'BKG-' . strtoupper(Str::random(8)),
+            'cancelled_at'         => null,
+            'cancellation_reason'  => null,
+        ];
     }
 
-    // Select a random trip and seat
-    $trip = Trip::where('bus_id', $bus->id)
-      ->where('route_id', $route->id)
-      ->inRandomOrder()
-      ->first();
+    // ------------------------------------------------------------------
+    // STATES
+    // ------------------------------------------------------------------
 
-    $seat = Seat::where('bus_id', $bus->id)
-      ->inRandomOrder()
-      ->first();
+    public function pending(): static
+    {
+        return $this->state(fn () => [
+            'status'         => 'pending',
+            'payment_status' => 'unpaid',
+            'amount_paid'    => 0.00,
+        ]);
+    }
 
-    return [
-      'user_id' => $user->id,
-      'bus_id' => $bus->id,
-      'route_id' => $route->id,
-      'trip_id' => $trip?->id,
-      'seat_id' => $seat?->id,
-      'seat_number' => $seat?->seat_number ?? $this->faker->numberBetween(1, 50),
-      'status' => $this->faker->randomElement(['pending', 'confirmed', 'cancelled', 'completed']),
-      'departure_time' => $this->faker->dateTimeBetween('+1 days', '+10 days'),
-      'arrival_time' => $this->faker->dateTimeBetween('+11 days', '+20 days'),
-      'amount_paid' => $this->faker->randomFloat(2, 100, 1000),
-      'payment_status' => $this->faker->randomElement(['unpaid', 'paid', 'refunded']),
-      'cancelled_at' => null,
-    ];
-  }
+    public function cancelled(): static
+    {
+        return $this->state(fn () => [
+            'status'              => 'cancelled',
+            'cancelled_at'        => now(),
+            'cancellation_reason' => fake()->randomElement([
+                'Customer request',
+                'Trip cancelled',
+                'Duplicate booking',
+                'Payment not received',
+            ]),
+        ]);
+    }
+
+    public function completed(): static
+    {
+        return $this->state(fn () => [
+            'status'         => 'completed',
+            'payment_status' => 'paid',
+        ]);
+    }
+
+    public function withPromotion(): static
+    {
+        return $this->state(function (array $attributes) {
+            $promo          = Promotion::valid()->inRandomOrder()->first()
+                              ?? Promotion::factory()->create();
+            $baseFare       = $attributes['base_fare'];
+            $discount       = $promo->calculateDiscount($baseFare);
+
+            return [
+                'promotion_id'    => $promo->id,
+                'discount_amount' => $discount,
+                'amount_paid'     => $baseFare - $discount,
+            ];
+        });
+    }
 }

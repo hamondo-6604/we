@@ -99,7 +99,7 @@
  }
 
  .logo-wordmark {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: 1.2rem;
    font-weight: 800;
    color: var(--ink);
@@ -268,7 +268,7 @@
  }
 
  .hero-heading {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: clamp(2.6rem, 4.5vw, 4.2rem);
    font-weight: 800;
    line-height: 1.08;
@@ -345,7 +345,7 @@
  }
 
  .hstat-num {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: 1.9rem;
    font-weight: 800;
    color: var(--ink);
@@ -420,7 +420,7 @@
  }
 
  .hv-city {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: 1.4rem;
    font-weight: 700;
  }
@@ -496,14 +496,14 @@
  }
 
  .float-val {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: 1.5rem;
    font-weight: 800;
    color: var(--ink);
  }
 
  .float-val-lt {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: 1.3rem;
    font-weight: 800;
    color: #fff;
@@ -655,7 +655,7 @@
    border-radius: 50%;
    background: var(--ink);
    color: var(--gold-lt);
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-weight: 800;
    font-size: 0.82rem;
    display: flex;
@@ -790,7 +790,7 @@
  }
 
  h2.s-title {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: clamp(2rem, 3.5vw, 2.9rem);
    font-weight: 800;
    color: var(--ink);
@@ -931,7 +931,7 @@
  }
 
  .rc-city {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: 1.1rem;
    font-weight: 700;
  }
@@ -980,7 +980,7 @@
  }
 
  .rc-price {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: 1.25rem;
    font-weight: 800;
    color: var(--gold);
@@ -1059,7 +1059,7 @@
  }
 
  .wf-body h3 {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: 1.05rem;
    font-weight: 700;
    color: #fff;
@@ -1105,7 +1105,7 @@
  }
 
  .wn-num {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: 2.8rem;
    font-weight: 800;
    color: #fff;
@@ -1199,7 +1199,7 @@
  }
 
  .step-card h3 {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: 1rem;
    font-weight: 700;
    color: var(--ink);
@@ -1285,7 +1285,7 @@
  }
 
  .pc-title {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: 1.3rem;
    font-weight: 800;
    line-height: 1.2;
@@ -1557,7 +1557,7 @@
  }
 
  .faq-right h3 {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: 1.5rem;
    font-weight: 800;
    margin-bottom: 10px;
@@ -1688,7 +1688,7 @@
  }
 
  .footer-col h4 {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: .95rem;
    font-weight: 700;
    color: #fff;
@@ -1845,7 +1845,7 @@
  }
 
  .modal-title {
-   font-family: 'Playfair Display', serif;
+   font-family: 'Outfit', sans-serif;
    font-size: 1.6rem;
    font-weight: 800;
    color: var(--ink);

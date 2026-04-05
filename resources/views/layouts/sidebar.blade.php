@@ -1,5 +1,14 @@
+{{-- ─────────────────────────────────────────────────────────────────────────
+    LOVO Admin — sidebar.blade.php
+    Dark ink (#0e1117) sidebar with gold (#b8912a) active state
+────────────────────────────────────────────────────────────────────────── --}}
+
+{{-- Mobile overlay --}}
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
 <aside id="sidebar" class="sidebar">
 
+    {{-- Brand --}}
     <div class="sidebar-brand">
         <div class="brand-mark">
             <i class="fa-solid fa-bus"></i>
@@ -8,107 +17,157 @@
         <span class="brand-badge">Admin</span>
     </div>
 
+    {{-- Navigation --}}
     <nav class="sidebar-nav" aria-label="Admin navigation">
 
+        {{-- Overview --}}
         <div class="nav-group-label">Overview</div>
+
         <a href="{{ route('admin.dashboard') }}"
-            class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-chart-pie"></i></span> Dashboard
-        </a>
-        <a href="{{ route('admin.analytics') }}"
-            class="nav-item {{ request()->routeIs('admin.analytics') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span> Analytics
+           class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-chart-pie"></i></span>
+            Dashboard
         </a>
 
+        <a href="{{ route('admin.analytics') }}"
+           class="nav-item {{ request()->routeIs('admin.analytics') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+            Analytics
+        </a>
+
+        {{-- Operations --}}
         <div class="nav-group-label">Operations</div>
+
         <a href="{{ route('admin.bookings.index') }}"
-            class="nav-item {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-ticket"></i></span> Bookings
+           class="nav-item {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-ticket"></i></span>
+            Bookings
             <span class="nav-badge">12</span>
         </a>
+
         <a href="{{ route('admin.trips.index') }}"
-            class="nav-item {{ request()->routeIs('admin.trips.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-location-dot"></i></span> Trips & Schedules
+           class="nav-item {{ request()->routeIs('admin.trips.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-location-dot"></i></span>
+            Trips &amp; Schedules
         </a>
+
         <a href="{{ route('admin.routes.index') }}"
-            class="nav-item {{ request()->routeIs('admin.routes.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-route"></i></span> Routes
+           class="nav-item {{ request()->routeIs('admin.routes.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-route"></i></span>
+            Routes
         </a>
+
         <a href="{{ route('admin.payments.index') }}"
-            class="nav-item {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-credit-card"></i></span> Payments
+           class="nav-item {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-credit-card"></i></span>
+            Payments
         </a>
+
         <a href="{{ route('admin.promotions.index') }}"
-            class="nav-item {{ request()->routeIs('admin.promotions.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-tag"></i></span> Promotions
+           class="nav-item {{ request()->routeIs('admin.promotions.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-tag"></i></span>
+            Promotions
             <span class="nav-badge gold">3</span>
         </a>
 
+        {{-- Fleet --}}
         <div class="nav-group-label">Fleet</div>
+
         <a href="{{ route('admin.buses.index') }}"
-            class="nav-item {{ request()->routeIs('admin.buses.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-bus"></i></span> Buses
+           class="nav-item {{ request()->routeIs('admin.buses.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-bus"></i></span>
+            Buses
         </a>
+
         <a href="{{ route('admin.bus-types.index') }}"
-            class="nav-item {{ request()->routeIs('admin.bus-types.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-couch"></i></span> Bus Types
+           class="nav-item {{ request()->routeIs('admin.bus-types.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-couch"></i></span>
+            Bus Types
         </a>
+
         <a href="{{ route('admin.seats.index') }}"
-            class="nav-item {{ request()->routeIs('admin.seats.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-chair"></i></span> Seats & Layouts
+           class="nav-item {{ request()->routeIs('admin.seats.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-chair"></i></span>
+            Seats &amp; Layouts
         </a>
+
         <a href="{{ route('admin.maintenance.index') }}"
-            class="nav-item {{ request()->routeIs('admin.maintenance.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-wrench"></i></span> Maintenance
+           class="nav-item {{ request()->routeIs('admin.maintenance.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-wrench"></i></span>
+            Maintenance
             <span class="nav-badge">2</span>
         </a>
 
+        {{-- People --}}
         <div class="nav-group-label">People</div>
+
         <a href="{{ route('admin.users.index') }}"
-            class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-users"></i></span> Users
+           class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+            Users
         </a>
+
         <a href="{{ route('admin.drivers.index') }}"
-            class="nav-item {{ request()->routeIs('admin.drivers.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-id-badge"></i></span> Drivers
+           class="nav-item {{ request()->routeIs('admin.drivers.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-id-badge"></i></span>
+            Drivers
         </a>
+
         <a href="{{ route('admin.feedback.index') }}"
-            class="nav-item {{ request()->routeIs('admin.feedback.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-comments"></i></span> Feedback
+           class="nav-item {{ request()->routeIs('admin.feedback.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-comments"></i></span>
+            Feedback
             <span class="nav-badge">5</span>
         </a>
 
+        {{-- System --}}
         <div class="nav-group-label">System</div>
+
         <a href="{{ route('admin.roles.index') }}"
-            class="nav-item {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-shield-halved"></i></span> Roles & Permissions
+           class="nav-item {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-shield-halved"></i></span>
+            Roles &amp; Permissions
         </a>
+
         <a href="{{ route('admin.notifications.index') }}"
-            class="nav-item {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-bell"></i></span> Notifications
+           class="nav-item {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-bell"></i></span>
+            Notifications
         </a>
+
         <a href="{{ route('admin.cities.index') }}"
-            class="nav-item {{ request()->routeIs('admin.cities.*') ? 'active' : '' }}">
-            <span class="nav-icon"><i class="fa-solid fa-city"></i></span> Cities
+           class="nav-item {{ request()->routeIs('admin.cities.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="fa-solid fa-city"></i></span>
+            Cities
         </a>
 
     </nav>
 
+    {{-- Footer: logged-in user --}}
     <div class="sidebar-footer">
-        <div class="sf-avatar">
-            {{ strtoupper(substr(auth()->user()->name ?? 'Admin', 0, 1)) }}
-            {{ strtoupper(substr(explode(' ', auth()->user()->name ?? 'AD')[1] ?? 'D', 0, 1)) }}
-        </div>
+
+        {{-- Avatar --}}
+        <a href="{{ route('admin.profile') }}" class="sf-avatar" title="My profile">
+            @if(auth()->user()?->profile_photo_url)
+                <img src="{{ auth()->user()->profile_photo_url }}"
+                     alt="{{ auth()->user()->name }}">
+            @else
+                {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}{{ strtoupper(substr(explode(' ', auth()->user()->name ?? 'AD')[1] ?? 'D', 0, 1)) }}
+            @endif
+        </a>
+
         <div class="sf-info">
             <div class="sf-name">{{ auth()->user()->name ?? 'Admin User' }}</div>
             <div class="sf-role">{{ auth()->user()->role?->name ?? 'Super Administrator' }}</div>
         </div>
-        <form method="POST" action="{{ route('logout') }}" id="logout-form">
+
+        <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="sf-logout" title="Logout">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
             </button>
         </form>
+
     </div>
 
 </aside>

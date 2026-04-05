@@ -7,126 +7,162 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Booking extends Model
 {
-  use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-  // Mass assignable fields
-  protected $fillable = [
-    'user_id',
-    'bus_id',
-    'route_id',
-    'trip_id',
-    'seat_id',
-    'seat_number',
-    'status',
-    'departure_time',
-    'arrival_time',
-    'amount_paid',
-    'payment_status',
-    'booking_reference',
-    'cancelled_at',
-  ];
+    protected $fillable = [
+        'user_id',
+        'trip_id',
+        'seat_id',
+        'promotion_id',
+        'seat_number',
+        'status',
+        'base_fare',
+        'discount_amount',
+        'amount_paid',
+        'payment_status',
+        'booking_reference',
+        'cancelled_at',
+        'cancellation_reason',
+    ];
 
-  // Attribute casting
-  protected $casts = [
-    'departure_time' => 'datetime',
-    'arrival_time' => 'datetime',
-    'cancelled_at' => 'datetime',
-    'amount_paid' => 'decimal:2',
-  ];
+    protected $casts = [
+        'cancelled_at'    => 'datetime',
+        'base_fare'       => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'amount_paid'     => 'decimal:2',
+    ];
 
-  // ------------------------------------------------------------------
-  // RELATIONSHIPS
-  // ------------------------------------------------------------------
+    // ------------------------------------------------------------------
+    // BOOT
+    // ------------------------------------------------------------------
 
-  public function user(): BelongsTo
-  {
-    return $this->belongsTo(User::class);
-  }
+    protected static function boot(): void
+    {
+        parent::boot();
 
-  public function bus(): BelongsTo
-  {
-    return $this->belongsTo(Bus::class);
-  }
+        static::creating(function ($booking) {
+            if (empty($booking->booking_reference)) {
+                $booking->booking_reference = 'BKG-' . strtoupper(Str::random(8));
+            }
+        });
+    }
 
-  public function route(): BelongsTo
-  {
-    return $this->belongsTo(BusRoute::class);
-  }
+    // ------------------------------------------------------------------
+    // RELATIONSHIPS
+    // ------------------------------------------------------------------
 
-  public function trip(): BelongsTo
-  {
-    return $this->belongsTo(Trip::class);
-  }
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
-  public function seat(): BelongsTo
-  {
-    return $this->belongsTo(Seat::class);
-  }
+    public function trip(): BelongsTo
+    {
+        return $this->belongsTo(Trip::class);
+    }
 
-  // ------------------------------------------------------------------
-  // BOOT & LIFECYCLE HOOKS
-  // ------------------------------------------------------------------
+    public function seat(): BelongsTo
+    {
+        return $this->belongsTo(Seat::class);
+    }
 
+    public function promotion(): BelongsTo
+    {
+        return $this->belongsTo(Promotion::class);
+    }
 
+    /**
+     * The single payment record for this booking.
+     */
+    public function payment(): HasOne
+    {
+        return $this->hasOne(Payment::class);
+    }
 
-  protected static function boot()
-  {
-    parent::boot();
+    /**
+     * All payment attempts (e.g. first attempt failed, second succeeded).
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
 
-    static::creating(function ($booking) {
-      if (empty($booking->booking_reference)) {
-        $booking->booking_reference = 'BKG-' . strtoupper(Str::random(8));
-      }
-    });
-  }
+    public function feedback(): HasMany
+    {
+        return $this->hasMany(Feedback::class);
+    }
 
-  // ------------------------------------------------------------------
-  // QUERY SCOPES
-  // ------------------------------------------------------------------
+    // ------------------------------------------------------------------
+    // CONVENIENCE ACCESSORS — derived from trip relationship
+    // ------------------------------------------------------------------
 
-  public function scopePending($query)
-  {
-    return $query->where('status', 'pending');
-  }
+    /**
+     * Get the bus through the trip — no redundant bus_id on bookings.
+     */
+    public function getBusAttribute(): ?Bus
+    {
+        return $this->trip?->bus;
+    }
 
-  public function scopeConfirmed($query)
-  {
-    return $query->where('status', 'confirmed');
-  }
+    /**
+     * Get the route through the trip.
+     */
+    public function getRouteAttribute(): ?BusRoute
+    {
+        return $this->trip?->route;
+    }
 
-  public function scopeCompleted($query)
-  {
-    return $query->where('status', 'completed');
-  }
+    public function getEffectiveSeatTypeAttribute(): string
+    {
+        return $this->seat?->effective_seat_type ?? 'economy';
+    }
 
-  public function scopeCancelled($query)
-  {
-    return $query->where('status', 'cancelled');
-  }
+    public function getFormattedAmountPaidAttribute(): string
+    {
+        return '₱' . number_format($this->amount_paid, 2);
+    }
 
-  // ------------------------------------------------------------------
-  // ACCESSORS
-  // ------------------------------------------------------------------
+    public function getFinalFareAttribute(): float
+    {
+        return (float) $this->base_fare - (float) $this->discount_amount;
+    }
 
-  /**
-   * Get the formatted amount paid for display.
-   */
-  public function getFormattedAmountPaidAttribute(): string
-  {
-    return number_format($this->amount_paid, 2);
-  }
+    // ------------------------------------------------------------------
+    // QUERY SCOPES
+    // ------------------------------------------------------------------
 
-  /**
-   * Get the effective seat type dynamically.
-   * Falls back to seat or bus default if needed.
-   */
-  public function getEffectiveSeatTypeAttribute(): string
-  {
-    return $this->seat?->seat_type
-      ?? $this->bus?->default_seat_type
-      ?? 'economy';
-  }
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    public function scopeConfirmed($query)
+    {
+        return $query->where('status', 'confirmed');
+    }
+
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'completed');
+    }
+
+    public function scopeCancelled($query)
+    {
+        return $query->where('status', 'cancelled');
+    }
+
+    public function scopeUnpaid($query)
+    {
+        return $query->where('payment_status', 'unpaid');
+    }
+
+    public function scopePaid($query)
+    {
+        return $query->where('payment_status', 'paid');
+    }
 }

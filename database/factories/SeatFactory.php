@@ -2,36 +2,38 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Seat;
 use App\Models\Bus;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SeatFactory extends Factory
 {
-  protected $model = Seat::class;
+    public function definition(): array
+    {
+        return [
+            'bus_id'      => Bus::inRandomOrder()->first()?->id ?? Bus::factory(),
+            'seat_number' => fake()->numberBetween(1, 14) . fake()->randomLetter(),
+            'seat_type'   => null,   // inherits bus default_seat_type
+            'status'      => 'available',
+        ];
+    }
 
-  public function definition(): array
-  {
-    $bus = Bus::inRandomOrder()->first(); // Pick a bus to assign
+    public function booked(): static
+    {
+        return $this->state(fn () => ['status' => 'booked']);
+    }
 
-    // Decide seat type: inherit from bus or random for hybrid
-    $seatType = $this->faker->boolean(80)
-      ? $bus->default_seat_type   // 80% inherit from bus
-      : $this->faker->randomElement(['economy', 'business', 'vip']); // 20% override
+    public function blocked(): static
+    {
+        return $this->state(fn () => ['status' => 'blocked']);
+    }
 
-    return [
-      'bus_id' => $bus->id,
-      'seat_number' => strtoupper($this->faker->bothify('??-#')), // e.g., A-1, B-2
-      'seat_type' => $seatType,
-      'status' => 'available',
-    ];
-  }
+    public function economy(): static
+    {
+        return $this->state(fn () => ['seat_type' => 'economy']);
+    }
 
-  /**
-   * Optionally force all seats to a single type
-   */
-  public function singleType(string $type): Factory
-  {
-    return $this->state(fn() => ['seat_type' => $type]);
-  }
+    public function business(): static
+    {
+        return $this->state(fn () => ['seat_type' => 'business']);
+    }
 }

@@ -4,41 +4,64 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Seat extends Model
 {
-  use HasFactory;
+    use HasFactory;
 
-  // Fillable fields
-  protected $fillable = [
-    'bus_id',
-    'seat_number',
-    'seat_type',
-    'status',
-  ];
+    protected $fillable = [
+        'bus_id',
+        'seat_number',
+        'seat_type',
+        'status',
+    ];
 
-  /**
-   * Relationship: Seat belongs to a Bus
-   */
-  public function bus()
-  {
-    return $this->belongsTo(Bus::class);
-  }
+    // ------------------------------------------------------------------
+    // RELATIONSHIPS
+    // ------------------------------------------------------------------
 
-  /**
-   * Relationship: Seat has many Bookings
-   */
-  public function bookings()
-  {
-    return $this->hasMany(Booking::class);
-  }
+    public function bus(): BelongsTo
+    {
+        return $this->belongsTo(Bus::class);
+    }
 
-  /**
-   * Get the effective seat type.
-   * If seat_type is null, inherit from the bus default_seat_type.
-   */
-  public function getEffectiveSeatTypeAttribute()
-  {
-    return $this->seat_type ?? $this->bus->default_seat_type ?? 'economy';
-  }
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    // ------------------------------------------------------------------
+    // ACCESSORS
+    // ------------------------------------------------------------------
+
+    /**
+     * Effective seat type: own value, or inherit from bus default, or fall back to 'economy'.
+     */
+    public function getEffectiveSeatTypeAttribute(): string
+    {
+        return $this->seat_type
+            ?? $this->bus?->default_seat_type
+            ?? 'economy';
+    }
+
+    // ------------------------------------------------------------------
+    // SCOPES
+    // ------------------------------------------------------------------
+
+    public function scopeAvailable($query)
+    {
+        return $query->where('status', 'available');
+    }
+
+    public function scopeBooked($query)
+    {
+        return $query->where('status', 'booked');
+    }
+
+    public function scopeByType($query, string $type)
+    {
+        return $query->where('seat_type', $type);
+    }
 }

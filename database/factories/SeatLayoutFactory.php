@@ -3,70 +3,72 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\SeatLayout;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SeatLayout>
- */
 class SeatLayoutFactory extends Factory
 {
-  protected $model = SeatLayout::class;
+    public function definition(): array
+    {
+        $rows    = fake()->numberBetween(8, 14);
+        $columns = fake()->randomElement([2, 4]);   // 2-seat or 4-seat rows
 
-  /**
-   * Define the model's default state.
-   *
-   * @return array<string, mixed>
-   */
-  public function definition(): array
-  {
-    $columns = $this->faker->randomElement([2, 3, 4, 5, 6]);
-    $rows = $this->faker->numberBetween(8, 15);
-    $capacity = $rows * $columns;
+        return [
+            'layout_name'  => $rows . 'x' . $columns . ' Standard',
+            'total_rows'   => $rows,
+            'total_columns'=> $columns,
+            'capacity'     => $rows * $columns,
+            'layout_map'   => $this->generateLayoutMap($rows, $columns),
+            'status'       => 'active',
+            'description'  => 'Standard ' . ($rows * $columns) . '-seat layout',
+        ];
+    }
 
-    $layoutName = match ($columns) {
-      4 => "Standard 2x2 Layout ({$capacity} seats)",
-      5 => "Coach 2x3 Layout ({$capacity} seats)",
-      6 => "Double Decker Layout ({$capacity} seats)",
-      2, 3 => "Custom Layout ({$capacity} seats)",
-      default => "Custom Layout ({$capacity} seats)",
-    };
+    // ------------------------------------------------------------------
+    // STATES
+    // ------------------------------------------------------------------
 
-    return [
-      'layout_name' => $layoutName,
-      'total_rows' => $rows,
-      'total_columns' => $columns,
-      'capacity' => $capacity,
-      'status' => $this->faker->randomElement(['active', 'inactive']),
-      'description' => $this->faker->optional()->sentence(8),
-      'layout_map' => [
-        'columns' => $columns,
-        'rows' => $rows,
-        'type' => 'Standard Seating',
-      ],
-    ];
-  }
+    public function standard(): static
+    {
+        return $this->state(fn () => [
+            'layout_name'   => '10x4 Standard',
+            'total_rows'    => 10,
+            'total_columns' => 4,
+            'capacity'      => 40,
+            'layout_map'    => $this->generateLayoutMap(10, 4),
+        ]);
+    }
 
-  /**
-   * VIP 1x1 layout state
-   */
-  public function vip(): Factory
-  {
-    $rows = $this->faker->numberBetween(5, 10);
-    $columns = 2;
-    $capacity = $rows * $columns;
+    public function minibus(): static
+    {
+        return $this->state(fn () => [
+            'layout_name'   => '6x2 Mini',
+            'total_rows'    => 6,
+            'total_columns' => 2,
+            'capacity'      => 12,
+            'layout_map'    => $this->generateLayoutMap(6, 2),
+        ]);
+    }
 
-    return $this->state(fn (array $attributes) => [
-      'layout_name' => "VIP 1x1 Recliner Layout ({$rows} rows)",
-      'total_rows' => $rows,
-      'total_columns' => $columns,
-      'capacity' => $capacity,
-      'description' => 'Spacious, premium single-seat layout.',
-      'status' => 'active',
-      'layout_map' => [
-        'columns' => $columns,
-        'rows' => $rows,
-        'type' => 'VIP 1x1',
-      ],
-    ]);
-  }
+    // ------------------------------------------------------------------
+    // HELPERS
+    // ------------------------------------------------------------------
+
+    private function generateLayoutMap(int $rows, int $columns): array
+    {
+        $map  = [];
+        $cols = range('A', chr(ord('A') + $columns - 1));
+
+        for ($r = 1; $r <= $rows; $r++) {
+            $rowSeats = [];
+            foreach ($cols as $col) {
+                $rowSeats[] = [
+                    'seat'   => $r . $col,
+                    'type'   => 'regular',
+                    'status' => 'available',
+                ];
+            }
+            $map[] = $rowSeats;
+        }
+
+        return $map;
+    }
 }

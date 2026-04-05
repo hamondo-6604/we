@@ -1,26 +1,3 @@
-{{--
-|--------------------------------------------------------------------------
-| resources/views/dashboard/admin_list.blade.php
-|--------------------------------------------------------------------------
-| Main Admin Dashboard view.
-|
-| Controller: App\Http\Controllers\Admin\DashboardController@index
-| Route name: admin.dashboard
-| Route: GET /admin/dashboard
-|
-| Data expected from controller ($data array or individual variables):
-| $totalBookings (int) — bookings this month
-| $totalRevenue (float) — revenue this month (₱)
-| $activeTrips (int) — currently running trips
-| $totalPassengers (int) — registered users
-| $recentBookings (Collection<Booking>) — latest 5 bookings
-    | $fleetStatus (array) — ['active'=>N, 'maintenance'=>N, 'idle'=>N]
-    | $revenueChart (array) — 30-day daily revenue for sparkline
-    | $bookingChart (array) — 30-day daily booking count
-    |
-    | TODO: Replace all placeholder values with real Eloquent data once
-    | models (Booking, Trip, Bus, User) are fully implemented.
-    --}}
 
     @extends('layouts.app')
 

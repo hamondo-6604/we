@@ -2,39 +2,26 @@
 
 namespace Database\Factories;
 
+use App\Models\SeatLayout;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\SeatLayout; // Import the SeatLayout model
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BusType>
- */
 class BusTypeFactory extends Factory
 {
-  /**
-   * Define the model's default state.
-   *
-   * @return array<string, mixed>
-   */
-  public function definition(): array
-  {
-    return [
-      'type_name' => $this->faker->randomElement([
-        'Mini Bus',
-        'Coach',
-        'Double Decker',
-        'Luxury Bus',
-        'Sleeper Bus',
-      ]),
+    public function definition(): array
+    {
+        return [
+            'type_name'      => fake()->randomElement([
+                'Ordinary', 'Aircon', 'Deluxe', 'Premium', 'Sleeper',
+            ]),
+            'seat_layout_id' => SeatLayout::inRandomOrder()->first()?->id
+                                ?? SeatLayout::factory(),
+            'status'         => 'active',
+            'description'    => fake()->sentence(),
+        ];
+    }
 
-      // Assign a random existing seat layout id from the seat_layouts table
-      'seat_layout_id' => SeatLayout::inRandomOrder()->value('id'),
-
-      'status' => $this->faker->randomElement([
-        'active',
-        'inactive',
-      ]),
-
-      'description' => $this->faker->optional()->sentence(10),
-    ];
-  }
+    public function inactive(): static
+    {
+        return $this->state(fn () => ['status' => 'inactive']);
+    }
 }

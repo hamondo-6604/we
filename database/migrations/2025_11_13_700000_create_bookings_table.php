@@ -4,73 +4,59 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBookingsTable extends Migration
+return new class extends Migration
 {
-  /**
-   * Run the migrations.
-   *
-   * @return void
-   */
-  public function up()
-  {
-    Schema::create('bookings', function (Blueprint $table) {
-      $table->id();  // Primary key
+    public function up(): void
+    {
+        Schema::create('bookings', function (Blueprint $table) {
+            $table->id();
 
-      // Foreign keys
-      $table->foreignId('user_id')
-        ->constrained('users')
-        ->onDelete('cascade');
-      $table->foreignId('bus_id')
-        ->constrained('buses')
-        ->onDelete('cascade');
-      $table->foreignId('route_id')
-        ->constrained('routes')
-        ->onDelete('cascade');
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->onDelete('cascade');
 
-      // Optional foreign keys
-      $table->foreignId('trip_id')->nullable()
-        ->constrained('trips')
-        ->onDelete('cascade');
-      $table->foreignId('seat_id')->nullable()
-        ->constrained('seats')
-        ->onDelete('set null');
+            $table->foreignId('trip_id')
+                ->constrained('trips')
+                ->onDelete('restrict');   // never silently delete a trip with bookings
 
-      // Booking details
-      $table->string('seat_number')->nullable();
-      $table->enum('status', ['pending', 'confirmed', 'cancelled', 'completed'])
-        ->default('pending');
+            $table->foreignId('seat_id')
+                ->nullable()
+                ->constrained('seats')
+                ->onDelete('set null');
 
-      $table->timestamp('departure_time')->nullable();
-      $table->timestamp('arrival_time')->nullable();
+            // Promo applied to this booking
+            $table->foreignId('promotion_id')
+                ->nullable()
+                ->constrained('promotions')
+                ->onDelete('set null');
 
-      // Payment details
-      $table->decimal('amount_paid', 10, 2)->default(0.00);
-      $table->string('payment_status')->default('unpaid');
+            $table->string('seat_number')->nullable();   // denormalised for quick display
 
-      // Booking reference
-      $table->string('booking_reference')->unique();
+            $table->enum('status', ['pending', 'confirmed', 'cancelled', 'completed'])
+                ->default('pending');
 
-      // Cancellation timestamp
-      $table->timestamp('cancelled_at')->nullable();
+            // Financials
+            $table->decimal('base_fare', 10, 2)->default(0.00);
+            $table->decimal('discount_amount', 10, 2)->default(0.00);
+            $table->decimal('amount_paid', 10, 2)->default(0.00);
 
-      // Laravel timestamps and soft deletes
-      $table->timestamps();
-      $table->softDeletes();
+            $table->enum('payment_status', ['unpaid', 'partial', 'paid', 'refunded'])
+                ->default('unpaid');
 
-      // Indexes for optimization
-      $table->index('status');
-      $table->index('payment_status');
-      $table->index('booking_reference');
-    });
-  }
+            $table->string('booking_reference')->unique();
+            $table->timestamp('cancelled_at')->nullable();
+            $table->text('cancellation_reason')->nullable();
 
-  /**
-   * Reverse the migrations.
-   *
-   * @return void
-   */
-  public function down()
-  {
-    Schema::dropIfExists('bookings');
-  }
-}
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->index('status');
+            $table->index('payment_status');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('bookings');
+    }
+};

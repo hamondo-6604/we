@@ -3,39 +3,48 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
-  /**
-   * Seed the application's database.
-   */
-  public function run(): void
-  {
-    DB::transaction(function () {
-      // 1️⃣ Seed Seat Layouts first (needed by bus types)
-      $this->call(SeatLayoutSeeder::class);
-
-      // 2️⃣ Seed Bus Types (depends on seat layouts)
-      $this->call(BusTypeSeeder::class);
-
-      // 3️⃣ Seed Buses (depends on bus types and seat layouts)
-      $this->call(BusSeeder::class);
-
-      // 4️⃣ Seed Seats for each bus (depends on buses)
-      $this->call(SeatSeeder::class);
-
-      // 5️⃣ Seed Users (admins, customers, etc.)
-      $this->call(UserSeeder::class);
-
-      // 6️⃣ Seed Routes (needed before trips)
-      $this->call(BusRouteSeeder::class);
-
-      // 7️⃣ Seed Trips (depends on buses and routes)
-      $this->call(TripSeeder::class);
-
-      // 8️⃣ Seed Bookings (depends on trips and users)
-      $this->call(BookingSeeder::class);
-    });
-  }
+    /**
+     * Run the database seeds.
+     *
+     * ORDER MATTERS — each seeder depends on the ones above it.
+     *
+     * 1.  Permissions          (no dependencies)
+     * 2.  Roles                (needs permissions for sync)
+     * 3.  Cities               (no dependencies)
+     * 4.  SeatLayouts          (no dependencies)
+     * 5.  BusTypes             (needs seat_layouts)
+     * 6.  Buses                (needs bus_types, seat_layouts → also creates Seats)
+     * 7.  Users                (no dependencies)
+     * 8.  Drivers              (needs users with role=driver)
+     * 9.  BusRoutes            (needs cities)
+     * 10. Promotions           (no dependencies)
+     * 11. Trips                (needs routes, buses, drivers)
+     * 12. Bookings             (needs trips, seats, users, promotions → also creates Payments)
+     * 13. MaintenanceLogs      (needs buses, users)
+     * 14. Feedback             (needs bookings)
+     * 15. Notifications        (needs bookings, users)
+     */
+    public function run(): void
+    {
+        $this->call([
+            PermissionSeeder::class,
+            RoleSeeder::class,
+            CitySeeder::class,
+            SeatLayoutSeeder::class,
+            BusTypeSeeder::class,
+            BusSeeder::class,       // also generates Seats
+            UserSeeder::class,
+            DriverSeeder::class,
+            BusRouteSeeder::class,
+            PromotionSeeder::class,
+            TripSeeder::class,
+            BookingSeeder::class,   // also generates Payments
+            MaintenanceLogSeeder::class,
+            FeedbackSeeder::class,
+            NotificationSeeder::class,
+        ]);
+    }
 }

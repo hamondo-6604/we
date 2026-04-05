@@ -12,7 +12,53 @@ class AuthController extends Controller
     // Landing page
     public function landing()
     {
-        return view('landing.home');
+        // Get dynamic data for the home page
+        $featuredRoutes = \App\Models\BusRoute::with(['originCity', 'destinationCity'])
+            ->where('status', 'active')
+            ->take(6)
+            ->get();
+            
+        $upcomingTrips = \App\Models\Trip::with(['route.originCity', 'route.destinationCity', 'bus', 'driver'])
+            ->where('status', 'scheduled')
+            ->where('trip_date', '>=', now()->format('Y-m-d'))
+            ->orderBy('trip_date', 'asc')
+            ->orderBy('departure_time', 'asc')
+            ->take(10)
+            ->get();
+            
+        $ongoingTrips = \App\Models\Trip::with(['route.originCity', 'route.destinationCity', 'bus', 'driver'])
+            ->where('status', 'ongoing')
+            ->orderBy('trip_date', 'desc')
+            ->orderBy('departure_time', 'desc')
+            ->take(3)
+            ->get();
+            
+        // Get cities that have actual routes between them
+        $originCities = \App\Models\BusRoute::with('originCity')
+            ->where('status', 'active')
+            ->get()
+            ->pluck('originCity.name')
+            ->unique()
+            ->sort()
+            ->values();
+            
+        $destinationCities = \App\Models\BusRoute::with('destinationCity')
+            ->where('status', 'active')
+            ->get()
+            ->pluck('destinationCity.name')
+            ->unique()
+            ->sort()
+            ->values();
+            
+        $stats = [
+            'totalCities' => \App\Models\City::where('status', 'active')->count(),
+            'totalRoutes' => \App\Models\BusRoute::where('status', 'active')->count(),
+            'activeBuses' => \App\Models\Bus::where('status', 'active')->count(),
+            'totalTrips' => \App\Models\Trip::count(),
+            'todayTrips' => \App\Models\Trip::whereDate('trip_date', now()->format('Y-m-d'))->count(),
+        ];
+        
+        return view('landing.home', compact('featuredRoutes', 'upcomingTrips', 'ongoingTrips', 'stats', 'originCities', 'destinationCities'));
     }
 
     // Ticket booking page

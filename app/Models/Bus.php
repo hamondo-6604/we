@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Bus extends Model
 {
@@ -15,32 +17,77 @@ class Bus extends Model
         'bus_type_id',
         'seat_layout_id',
         'total_seats',
+        'default_seat_type',
         'bus_img',
         'status',
         'description',
     ];
 
-    // Relationships
+    // ------------------------------------------------------------------
+    // RELATIONSHIPS
+    // ------------------------------------------------------------------
 
-    // Bus belongs to BusType
-    public function type()
+    public function type(): BelongsTo
     {
         return $this->belongsTo(BusType::class, 'bus_type_id');
     }
 
-  public function seats()
-  {
-    return $this->hasMany(Seat::class);
-  }
-
-    // Bus belongs to SeatLayout
-    public function seatLayout()
+    public function seatLayout(): BelongsTo
     {
         return $this->belongsTo(SeatLayout::class, 'seat_layout_id');
     }
 
-    public function bookings()
+    public function seats(): HasMany
+    {
+        return $this->hasMany(Seat::class);
+    }
+
+    public function trips(): HasMany
+    {
+        return $this->hasMany(Trip::class);
+    }
+
+    public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public function maintenanceLogs(): HasMany
+    {
+        return $this->hasMany(MaintenanceLog::class);
+    }
+
+    // ------------------------------------------------------------------
+    // ACCESSORS
+    // ------------------------------------------------------------------
+
+    /**
+     * Count of currently available seats for a given trip.
+     * Usage: $bus->availableSeatsForTrip($tripId)
+     */
+    public function availableSeatsForTrip(int $tripId): int
+    {
+        $bookedSeatIds = Booking::where('trip_id', $tripId)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->pluck('seat_id');
+
+        return $this->seats()
+            ->whereNotIn('id', $bookedSeatIds)
+            ->where('status', 'available')
+            ->count();
+    }
+
+    // ------------------------------------------------------------------
+    // SCOPES
+    // ------------------------------------------------------------------
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    public function scopeAvailable($query)
+    {
+        return $query->where('status', 'active');
     }
 }
