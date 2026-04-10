@@ -1,20 +1,108 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Bookings – VoyagePH</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="{{ asset('css/landing/manage_booking.css') }}">
-</head>
-<body>
-  <!-- ══ NAVBAR ══ -->
-  <nav id="nav">
-    <!-- ... -->
-  </nav>
-  <!-- ... -->
-</body>
-</html>
+@extends('landing.layouts.app', ['active' => 'manage_bookings'])
+
+@section('title', 'My Bookings – VoyagePH')
+
+@push('styles')
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink:#0e1117; --ink-mid:#1a2235; --ink-soft:#2e3a52;
+      --gold:#b8912a; --gold-lt:#d4a843;
+      --gold-bg:rgba(184,145,42,.08); --gold-line:rgba(184,145,42,.2);
+      --red:#c0392b; --red-bg:rgba(192,57,43,.07);
+      --bg:#f9f7f4; --bg-2:#f2ede6; --bg-3:#ffffff;
+      --border:#e4ddd3; --border-dk:#ccc4b8;
+      --muted:#7a7468; --muted-lt:#a09890; --text:#1a1612;
+      --green:#059669; --green-bg:rgba(5,150,105,.08);
+      --blue:#2563eb; --blue-bg:rgba(37,99,235,.07);
+      --nav-h:70px; --radius:14px;
+      --shadow-sm:0 2px 12px rgba(14,17,23,.06);
+      --shadow-md:0 8px 32px rgba(14,17,23,.10);
+      --shadow-lg:0 20px 60px rgba(14,17,23,.14);
+    }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+
+    /* ══ NAVBAR ══ */
+    #nav {
+      position:fixed; top:0; left:0; right:0; height:var(--nav-h); z-index:900;
+      background:rgba(249,247,244,.95); backdrop-filter:blur(18px) saturate(1.4);
+      border-bottom:1px solid var(--border); box-shadow:var(--shadow-sm);
+    }
+    .nav-wrap { max-width:1260px; margin:0 auto; height:100%; display:flex; align-items:center; padding:0 32px; }
+    .logo { display:flex; align-items:center; gap:10px; text-decoration:none; flex-shrink:0; margin-right:44px; cursor:pointer; }
+    .logo-mark { width:38px; height:38px; border-radius:9px; background:var(--ink); display:flex; align-items:center; justify-content:center; }
+    .logo-mark svg { width:20px; height:20px; fill:none; stroke:var(--gold-lt); stroke-width:1.8; stroke-linecap:round; }
+    .logo-mark i { font-size:1.05rem; color:var(--gold-lt); }
+    .logo-wordmark { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:800; color:var(--ink); letter-spacing:-.3px; }
+    .logo-wordmark span { color:var(--gold); }
+    .nav-links { display:flex; list-style:none; gap:2px; }
+    .nav-links a { text-decoration:none; color:var(--muted); font-size:.84rem; font-weight:500; padding:7px 14px; border-radius:7px; transition:color .18s,background .18s; white-space:nowrap; position:relative; cursor:pointer; }
+    .nav-links a:hover { color:var(--ink); background:var(--bg-2); }
+    .nav-links a.active { color:var(--ink); font-weight:600; }
+    .nav-links a.active::after { content:''; position:absolute; bottom:-1px; left:14px; right:14px; height:2px; background:var(--gold); border-radius:2px; }
+    .nav-right { margin-left:auto; display:flex; align-items:center; gap:8px; }
+    .btn-login {
+      background:none; border:1.5px solid var(--border-dk); color:var(--ink-soft);
+      padding:8px 18px; border-radius:8px; font-size:.83rem; font-weight:600;
+      cursor:pointer; font-family:'Outfit',sans-serif; transition:all .18s;
+      text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+    }
+    .btn-login:hover { border-color:var(--ink); color:var(--ink); }
+    .btn-book {
+      background:var(--ink); color:#fff; border:none; padding:9px 20px; border-radius:8px;
+      font-size:.83rem; font-weight:700; cursor:pointer; font-family:'Outfit',sans-serif;
+      transition:all .2s; display:inline-flex; align-items:center; gap:6px;
+      text-decoration:none;
+    }
+    .btn-book:hover { background:var(--ink-mid); transform:translateY(-1px); box-shadow:0 6px 20px rgba(14,17,23,.2); }
+    /* user avatar */
+    .nav-avatar { width:36px; height:36px; border-radius:50%; background:var(--ink); color:var(--gold-lt); font-family:'Playfair Display',serif; font-weight:800; font-size:.82rem; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid var(--gold-line); position:relative; }
+    .nav-avatar-menu { position:absolute; top:calc(100% + 10px); right:0; background:var(--bg-3); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow-md); padding:8px; min-width:180px; display:none; z-index:999; }
+    .nav-avatar:hover .nav-avatar-menu { display:block; }
+    .nav-avatar-menu a { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; font-size:.82rem; color:var(--text); text-decoration:none; transition:background .15s; cursor:pointer; }
+    .nav-avatar-menu a:hover { background:var(--bg-2); }
+    .nav-avatar-menu .divider { height:1px; background:var(--border); margin:4px 0; }
+
+    /* ══ PAGE HEADER ══ */
+    .page-header {
+      padding-top:calc(var(--nav-h) + 52px); padding-bottom:48px; padding-left:32px; padding-right:32px;
+      background:linear-gradient(160deg,#fff 0%,var(--bg) 100%); position:relative; overflow:hidden;
+    }
+    .page-header::before { content:''; position:absolute; top:0; right:0; width:55%; height:100%; background:radial-gradient(ellipse 70% 70% at 80% 40%,rgba(184,145,42,.07) 0%,transparent 65%); pointer-events:none; }
+    .ph-inner { max-width:1260px; margin:0 auto; position:relative; z-index:1; display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+    .breadcrumb { display:flex; align-items:center; gap:8px; font-size:.75rem; color:var(--muted-lt); margin-bottom:20px; }
+    .breadcrumb a { color:var(--muted); text-decoration:none; font-weight:500; cursor:pointer; }
+    .breadcrumb a:hover { color:var(--gold); }
+    .breadcrumb .sep { color:var(--border-dk); }
+    .breadcrumb .cur { color:var(--gold); font-weight:600; }
+    .ph-eyebrow { display:inline-flex; align-items:center; gap:8px; font-size:.72rem; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
+    .ph-eyebrow::before { content:''; width:28px; height:1.5px; background:var(--gold); }
+    .ph-heading { font-family:'Playfair Display',serif; font-size:clamp(2rem,3.5vw,2.8rem); font-weight:800; line-height:1.1; letter-spacing:-.3px; color:var(--ink); }
+    .ph-heading em { font-style:italic; color:var(--gold); }
+    .ph-sub { color:var(--muted); font-size:.95rem; line-height:1.7; margin-top:10px; max-width:480px; }
+    /* header stat pills */
+    .ph-stats { display:flex; gap:12px; flex-wrap:wrap; }
+    .ph-stat { background:var(--bg-3); border:1px solid var(--border); border-radius:50px; padding:8px 18px; display:flex; align-items:center; gap:8px; font-size:.8rem; font-weight:600; color:var(--ink); box-shadow:var(--shadow-sm); }
+    .ph-stat .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .dot-upcoming { background:#3b82f6; }
+    .dot-completed { background:var(--green); }
+    .dot-cancelled { background:var(--red); }
+
+    /* ══ MAIN LAYOUT ══ */
+    .page-body { max-width:1260px; margin:0 auto; padding:40px 32px 80px; display:grid; grid-template-columns:260px 1fr; gap:32px; align-items:start; }
+
+    /* ══ SIDEBAR ══ */
+    .sidebar { position:sticky; top:calc(var(--nav-h) + 20px); display:flex; flex-direction:column; gap:16px; }
+
+    .profile-card { background:var(--bg-3); border:1px solid var(--border); border-radius:18px; overflow:hidden; box-shadow:var(--shadow-sm); }
+    .profile-card-head { background:var(--ink); padding:24px 20px; text-align:center; position:relative; }
+    .profile-card-head::before { content:''; position:absolute; top:-30px; left:50%; transform:translateX(-50%); width:200px; height:200px; border-radius:50%; background:radial-gradient(circle,rgba(184,145,42,.18) 0%,transparent 65%); }
+    .profile-avatar { width:64px; height:64px; border-radius:50%; background:var(--gold-bg); border:3px solid rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:800; color:var(--gold-lt); margin:0 auto 12px; position:relative; z-index:1; }
+    .profile-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:800; color:#fff; margin-bottom:4px; }
+    .profile-email { font-size:.75rem; color:rgba(255,255,255,.45); }
+    .profile-verified { display:inline-flex; align-items:center; gap:5px; background:rgba(5,150,105,.18); border:1px solid rgba(5,150,105,.3); padding:3px 10px; border-radius:50px; font-size:.68rem; font-weight:700; color:#34d399; margin-top:8px; }
+    .profile-card-body { padding:16px; }
     .profile-stat-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px; }
     .profile-stat { text-align:center; padding:10px 6px; background:var(--bg); border-radius:10px; border:1px solid var(--border); }
     .profile-stat-num { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:800; color:var(--ink); }
@@ -252,19 +340,10 @@
     .reveal { opacity:0; transform:translateY(16px); transition:opacity .4s ease,transform .4s ease; }
     .reveal.in { opacity:1; transform:none; }
 
-    /* ══ FOOTER ══ */
-    footer { background:var(--ink); color:rgba(255,255,255,.55); padding:28px 32px; }
-    .footer-inner { max-width:1260px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
-    .footer-payments { display:flex; align-items:center; gap:6px; }
-    .pay-badge { font-size:.65rem; font-weight:800; padding:3px 8px; border-radius:4px; background:rgba(255,255,255,.1); color:rgba(255,255,255,.6); }
-    .footer-socials { display:flex; gap:6px; }
-    .soc-btn { width:30px; height:30px; border-radius:7px; background:rgba(255,255,255,.08); display:flex; align-items:center; justify-content:center; font-size:.7rem; color:rgba(255,255,255,.5); text-decoration:none; transition:all .18s; cursor:pointer; }
-    .soc-btn:hover { background:var(--gold); color:var(--ink); }
-
     /* ══ RESPONSIVE ══ */
     @media (max-width:900px) { .page-body { grid-template-columns:1fr; } .sidebar { position:static; } }
     @media (max-width:640px) {
-      .nav-links,.btn-outline { display:none; }
+      .nav-links, .nav-right { display:none; }
       .page-body { padding:24px 16px 60px; }
       .bc-meta-grid { grid-template-columns:1fr 1fr; }
       .bc-meta-item:nth-child(3) { border-left:none; }
@@ -273,47 +352,16 @@
       .ticket-details { grid-template-columns:1fr 1fr; }
     }
   </style>
-</head>
-<body>
+@endpush
 
-<!-- ══ NAVBAR ══ -->
-<nav id="nav">
-  <div class="nav-wrap">
-    <a class="logo" href="home-page.html">
-      <div class="logo-mark">
-        <svg viewBox="0 0 24 24"><path d="M3 14V8a2 2 0 012-2h14a2 2 0 012 2v6M3 14h18M3 14l-1 3h20l-1-3M7 14v2m10-2v2M6 10h12"/></svg>
-      </div>
-      <span class="logo-wordmark">Voyage<span>PH</span></span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="{{ route('landing.home') }}">Home</a></li>
-      <li><a href="{{ route('landing.ticket_booking') }}">Book a Ticket</a></li>
-      <li><a href="{{ route('landing.booking_routes') }}">Routes</a></li>
-      <li><a href="#">Promos</a></li>
-      <li><a href="#" class="active">Manage Booking</a></li>
-    </ul>
-    <div class="nav-right">
-      <button class="btn-outline" onclick="showToast('🎫','Redirecting to booking...')">🎫 Book a Trip</button>
-      <div class="nav-avatar" id="user-avatar-btn">
-        JD
-        <div class="nav-avatar-menu">
-          <a onclick="showSideNav('profile')">👤 My Profile</a>
-          <a onclick="showSideNav('bookings')">🎫 My Bookings</a>
-          <a onclick="showSideNav('upcoming')">📅 Upcoming Trips</a>
-          <div class="divider"></div>
-          <a onclick="showToast('👋','You have been signed out.')">🚪 Sign Out</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</nav>
+@section('content')
 
 <!-- ══ PAGE HEADER ══ -->
 <div class="page-header">
   <div class="ph-inner">
     <div>
       <nav class="breadcrumb">
-        <a href="home-page.html">Home</a>
+        <a href="{{ route('landing.home') }}">Home</a>
         <span class="sep">/</span>
         <span class="cur">My Bookings</span>
       </nav>
@@ -464,21 +512,6 @@
 
   </div>
 </div>
-
-<!-- ══ FOOTER ══ -->
-<footer>
-  <div class="footer-inner">
-    <p style="font-size:.78rem;">© 2026 VoyagePH. All rights reserved.</p>
-    <div class="footer-payments">
-      <span style="font-size:.68rem;color:rgba(255,255,255,.25);margin-right:6px;">We accept</span>
-      <span class="pay-badge">GCash</span><span class="pay-badge">Maya</span>
-      <span class="pay-badge">Visa</span><span class="pay-badge">MC</span><span class="pay-badge">OTC</span>
-    </div>
-    <div class="footer-socials">
-      <a class="soc-btn">f</a><a class="soc-btn">𝕏</a><a class="soc-btn">in</a><a class="soc-btn">📷</a>
-    </div>
-  </div>
-</footer>
 
 <!-- ══ TICKET MODAL ══ -->
 <div class="modal-overlay" id="ticket-modal" onclick="closeModal('ticket-modal',event)">
@@ -679,6 +712,9 @@
 <!-- Toast -->
 <div class="toast" id="toast"><span id="ti">✓</span>&nbsp;<span id="tm">Done!</span></div>
 
+@endsection
+
+@push('scripts')
 <script>
 /* ══════════════════════════════════════
    DATA
@@ -1183,5 +1219,4 @@ document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
 /* ── INIT ── */
 renderBookings();
 </script>
-</body>
-</html>
+@endpush

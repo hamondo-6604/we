@@ -3,9 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Booking;
+use App\Models\BookingSeat;
 use App\Models\Payment;
 use App\Models\Promotion;
 use App\Models\Seat;
+use App\Models\SeatType;
 use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -15,8 +17,9 @@ class BookingSeeder extends Seeder
 {
     public function run(): void
     {
-        $customers  = User::where('role', 'customer')->get();
-        $promo      = Promotion::where('code', 'WELCOME20')->first();
+        $customers = User::where('role', 'customer')->get();
+        $promo     = Promotion::where('code', 'WELCOME20')->first();
+        $seatTypes = SeatType::pluck('id', 'name');
 
         if ($customers->isEmpty()) {
             $this->command->warn('BookingSeeder: no customers found. Skipping.');
@@ -27,8 +30,7 @@ class BookingSeeder extends Seeder
         $completedTrips = Trip::where('status', 'completed')->get();
 
         foreach ($completedTrips as $trip) {
-            $seats = Seat::where('bus_id', $trip->bus_id)->get();
-            // Book 60–100% of seats on completed trips
+            $seats     = Seat::where('bus_id', $trip->bus_id)->get();
             $bookCount = (int) ceil($seats->count() * (rand(60, 100) / 100));
 
             foreach ($seats->take($bookCount) as $seat) {
@@ -43,6 +45,14 @@ class BookingSeeder extends Seeder
                     $promoId  = $promo->id;
                 }
 
+                // Apply user type discount on top of promo
+                $userDiscount = $customer->calculateFare($baseFare);
+                if ($userDiscount < $baseFare && $discount === 0.00) {
+                    $discount = $baseFare - $userDiscount;
+                }
+
+                $seatTypeId = $seatTypes[$seat->seat_type ?? $trip->bus?->default_seat_type ?? 'economy'] ?? null;
+
                 $booking = Booking::create([
                     'user_id'             => $customer->id,
                     'trip_id'             => $trip->id,
@@ -52,12 +62,24 @@ class BookingSeeder extends Seeder
                     'status'              => 'completed',
                     'base_fare'           => $baseFare,
                     'discount_amount'     => $discount,
-                    'amount_paid'         => $baseFare - $discount,
+                    'amount_paid'         => max(0, $baseFare - $discount),
                     'payment_status'      => 'paid',
                     'booking_reference'   => 'BKG-' . strtoupper(Str::random(8)),
                 ]);
 
-                // Create payment record
+                // Create booking_seats row
+                BookingSeat::create([
+                    'booking_id'     => $booking->id,
+                    'seat_id'        => $seat->id,
+                    'seat_type_id'   => $seatTypeId,
+                    'passenger_name' => $customer->name,
+                    'passenger_type' => 'adult',
+                    'seat_number'    => $seat->seat_number,
+                    'fare'           => $booking->amount_paid,
+                    'status'         => 'confirmed',
+                ]);
+
+                // Payment record
                 Payment::create([
                     'booking_id'     => $booking->id,
                     'amount'         => $booking->amount_paid,
@@ -67,12 +89,10 @@ class BookingSeeder extends Seeder
                     'currency'       => 'PHP',
                     'paid_at'        => $trip->departure_time,
                 ]);
+
+                $seat->update(['status' => 'booked']);
             }
 
-            // Mark seats as booked
-            $seats->take($bookCount)->each(fn ($s) => $s->update(['status' => 'booked']));
-
-            // Update available_seats on completed trip
             $trip->update(['available_seats' => max(0, $seats->count() - $bookCount)]);
         }
 
@@ -84,15 +104,22 @@ class BookingSeeder extends Seeder
             $bookCount = (int) ceil($seats->count() * (rand(20, 70) / 100));
 
             foreach ($seats->take($bookCount) as $seat) {
-                $customer  = $customers->random();
-                $baseFare  = (float) $trip->fare;
-                $discount  = 0.00;
-                $promoId   = null;
+                $customer   = $customers->random();
+                $baseFare   = (float) $trip->fare;
+                $discount   = 0.00;
+                $promoId    = null;
 
                 if ($promo && rand(1, 4) === 1) {
                     $discount = $promo->calculateDiscount($baseFare);
                     $promoId  = $promo->id;
                 }
+
+                $userDiscount = $customer->calculateFare($baseFare);
+                if ($userDiscount < $baseFare && $discount === 0.00) {
+                    $discount = $baseFare - $userDiscount;
+                }
+
+                $seatTypeId = $seatTypes[$seat->seat_type ?? $trip->bus?->default_seat_type ?? 'economy'] ?? null;
 
                 $booking = Booking::create([
                     'user_id'           => $customer->id,
@@ -103,9 +130,20 @@ class BookingSeeder extends Seeder
                     'status'            => 'confirmed',
                     'base_fare'         => $baseFare,
                     'discount_amount'   => $discount,
-                    'amount_paid'       => $baseFare - $discount,
+                    'amount_paid'       => max(0, $baseFare - $discount),
                     'payment_status'    => 'paid',
                     'booking_reference' => 'BKG-' . strtoupper(Str::random(8)),
+                ]);
+
+                BookingSeat::create([
+                    'booking_id'     => $booking->id,
+                    'seat_id'        => $seat->id,
+                    'seat_type_id'   => $seatTypeId,
+                    'passenger_name' => $customer->name,
+                    'passenger_type' => 'adult',
+                    'seat_number'    => $seat->seat_number,
+                    'fare'           => $booking->amount_paid,
+                    'status'         => 'confirmed',
                 ]);
 
                 Payment::create([
@@ -148,11 +186,12 @@ class BookingSeeder extends Seeder
                 'booking_reference'   => 'BKG-' . strtoupper(Str::random(8)),
                 'cancelled_at'        => now()->subDays(rand(1, 10)),
                 'cancellation_reason' => collect([
-                    'Customer request',
-                    'Change of plans',
-                    'Duplicate booking',
+                    'Customer request', 'Change of plans', 'Duplicate booking',
                 ])->random(),
             ]);
+            // Cancelled bookings intentionally have no booking_seats row
         }
+
+        $this->command->info('BookingSeeder: seeded ' . Booking::count() . ' bookings, ' . BookingSeat::count() . ' booking seats.');
     }
 }

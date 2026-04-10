@@ -73,8 +73,26 @@ class AuthController extends Controller
     }
 
     // Manage bookings page
-    public function manageBookings(){
+    public function manageBookings()
+    {
+        $user = Auth::user();
+
+        if (! $user) {
+            return redirect()->route('landing.home');
+        }
+
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        // Customers/passengers: landing “My Bookings” page (same as other landing routes)
         return view('landing.manage_booking');
+    }
+
+    // Booking promos page
+    public function bookingPromos()
+    {
+        return view('landing.booking_promo');
     }
 
     // Show login form

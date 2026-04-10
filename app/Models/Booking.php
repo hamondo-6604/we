@@ -17,7 +17,7 @@ class Booking extends Model
     protected $fillable = [
         'user_id',
         'trip_id',
-        'seat_id',
+        'seat_id',          // primary seat (kept for BC) — full list is in booking_seats
         'promotion_id',
         'seat_number',
         'status',
@@ -66,6 +66,7 @@ class Booking extends Model
         return $this->belongsTo(Trip::class);
     }
 
+    /** Primary seat (single-seat bookings / backwards compatibility). */
     public function seat(): BelongsTo
     {
         return $this->belongsTo(Seat::class);
@@ -76,17 +77,11 @@ class Booking extends Model
         return $this->belongsTo(Promotion::class);
     }
 
-    /**
-     * The single payment record for this booking.
-     */
     public function payment(): HasOne
     {
         return $this->hasOne(Payment::class);
     }
 
-    /**
-     * All payment attempts (e.g. first attempt failed, second succeeded).
-     */
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
@@ -97,21 +92,23 @@ class Booking extends Model
         return $this->hasMany(Feedback::class);
     }
 
+    /**
+     * All seats in this booking (supports group/multi-seat bookings).
+     */
+    public function bookingSeats(): HasMany
+    {
+        return $this->hasMany(BookingSeat::class);
+    }
+
     // ------------------------------------------------------------------
-    // CONVENIENCE ACCESSORS — derived from trip relationship
+    // CONVENIENCE ACCESSORS
     // ------------------------------------------------------------------
 
-    /**
-     * Get the bus through the trip — no redundant bus_id on bookings.
-     */
     public function getBusAttribute(): ?Bus
     {
         return $this->trip?->bus;
     }
 
-    /**
-     * Get the route through the trip.
-     */
     public function getRouteAttribute(): ?BusRoute
     {
         return $this->trip?->route;
@@ -119,7 +116,10 @@ class Booking extends Model
 
     public function getEffectiveSeatTypeAttribute(): string
     {
-        return $this->seat?->effective_seat_type ?? 'economy';
+        return $this->seat?->effectiveSeatType?->name
+            ?? $this->seat?->seat_type
+            ?? $this->bus?->default_seat_type
+            ?? 'economy';
     }
 
     public function getFormattedAmountPaidAttribute(): string
@@ -130,6 +130,26 @@ class Booking extends Model
     public function getFinalFareAttribute(): float
     {
         return (float) $this->base_fare - (float) $this->discount_amount;
+    }
+
+    /**
+     * Total number of seats in this booking (1 for single, N for group).
+     */
+    public function getSeatCountAttribute(): int
+    {
+        $count = $this->bookingSeats()->count();
+        return $count > 0 ? $count : 1;
+    }
+
+    /**
+     * Comma-separated seat numbers for display: "3A, 3B, 3C"
+     */
+    public function getSeatListAttribute(): string
+    {
+        $seats = $this->bookingSeats()->pluck('seat_number');
+        return $seats->isNotEmpty()
+            ? $seats->join(', ')
+            : ($this->seat_number ?? '—');
     }
 
     // ------------------------------------------------------------------

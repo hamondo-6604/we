@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\UserType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -14,8 +15,9 @@ class UserFactory extends Factory
             'name'              => fake()->name(),
             'email'             => fake()->unique()->safeEmail(),
             'phone'             => fake()->numerify('09#########'),
-            'password'          => Hash::make('password'),  // default password for seeding
+            'password'          => Hash::make('password'),
             'role'              => 'customer',
+            'user_type_id'      => UserType::where('name', 'regular')->first()?->id,
             'status'            => 'active',
             'profile_photo'     => null,
             'email_verified_at' => now(),
@@ -30,20 +32,46 @@ class UserFactory extends Factory
     public function admin(): static
     {
         return $this->state(fn () => [
-            'role'  => 'admin',
-            'email' => 'admin@busbook.com',
-            'name'  => 'System Admin',
+            'role'         => 'admin',
+            'user_type_id' => UserType::where('name', 'regular')->first()?->id,
         ]);
     }
 
     public function driver(): static
     {
-        return $this->state(fn () => ['role' => 'driver']);
+        return $this->state(fn () => [
+            'role'         => 'driver',
+            'user_type_id' => UserType::where('name', 'regular')->first()?->id,
+        ]);
     }
 
     public function customer(): static
     {
         return $this->state(fn () => ['role' => 'customer']);
+    }
+
+    public function student(): static
+    {
+        return $this->state(fn () => [
+            'role'         => 'customer',
+            'user_type_id' => UserType::where('name', 'student')->first()?->id,
+        ]);
+    }
+
+    public function senior(): static
+    {
+        return $this->state(fn () => [
+            'role'         => 'customer',
+            'user_type_id' => UserType::where('name', 'senior')->first()?->id,
+        ]);
+    }
+
+    public function pwd(): static
+    {
+        return $this->state(fn () => [
+            'role'         => 'customer',
+            'user_type_id' => UserType::where('name', 'pwd')->first()?->id,
+        ]);
     }
 
     public function blocked(): static

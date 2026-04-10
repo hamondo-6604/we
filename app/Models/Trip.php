@@ -13,8 +13,11 @@ class Trip extends Model
 
     protected $fillable = [
         'route_id',
+        'schedule_id',              // NEW
         'bus_id',
         'driver_id',
+        'departure_terminal_id',    // NEW
+        'arrival_terminal_id',      // NEW
         'trip_code',
         'trip_date',
         'departure_time',
@@ -28,8 +31,6 @@ class Trip extends Model
 
     protected $casts = [
         'trip_date'      => 'date',
-        // FIX: was 'datetime:H:i' on a time() column — now timestamp columns,
-        // so standard datetime cast works correctly with Carbon.
         'departure_time' => 'datetime',
         'arrival_time'   => 'datetime',
         'fare'           => 'decimal:2',
@@ -45,6 +46,11 @@ class Trip extends Model
         return $this->belongsTo(BusRoute::class, 'route_id');
     }
 
+    public function schedule(): BelongsTo
+    {
+        return $this->belongsTo(Schedule::class);
+    }
+
     public function bus(): BelongsTo
     {
         return $this->belongsTo(Bus::class);
@@ -53,6 +59,16 @@ class Trip extends Model
     public function driver(): BelongsTo
     {
         return $this->belongsTo(Driver::class);
+    }
+
+    public function departureTerminal(): BelongsTo
+    {
+        return $this->belongsTo(Terminal::class, 'departure_terminal_id');
+    }
+
+    public function arrivalTerminal(): BelongsTo
+    {
+        return $this->belongsTo(Terminal::class, 'arrival_terminal_id');
     }
 
     public function bookings(): HasMany
@@ -69,17 +85,23 @@ class Trip extends Model
     // ACCESSORS
     // ------------------------------------------------------------------
 
-    /**
-     * Human-readable departure e.g. "Mon, Jan 6 · 08:00 AM"
-     */
     public function getFormattedDepartureAttribute(): string
     {
         return $this->departure_time?->format('D, M j · h:i A') ?? '—';
     }
 
     /**
-     * Whether this trip still has open seats.
+     * e.g. "Cubao Terminal, 6:00 AM"
      */
+    public function getDepartureSummaryAttribute(): string
+    {
+        $terminal = $this->departureTerminal?->name
+            ?? $this->route?->originCity?->name
+            ?? '—';
+
+        return $terminal . ', ' . ($this->departure_time?->format('g:i A') ?? '—');
+    }
+
     public function hasAvailableSeats(): bool
     {
         return $this->available_seats > 0;

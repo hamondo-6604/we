@@ -3,6 +3,17 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
+// Auth pages (existing Blade pages in resources/views/auth)
+Route::middleware('guest')->group(function () {
+  Route::get('/login', function () {
+    return view('auth.login');
+  })->name('login');
+
+  Route::get('/register', function () {
+    return view('auth.register');
+  })->name('register');
+});
+
 // Landing
 Route::get('/', [AuthController::class, 'landing'])->name('landing.home');
 
@@ -12,14 +23,14 @@ Route::get('/ticket-booking', [AuthController::class, 'ticketBooking'])->name('l
 //Route Booking
 Route::get('/booking-routes', [AuthController::class, 'routesBooking'])->name('landing.booking_routes');
 
-// Admin Dashboard (admin users only)
-Route::middleware('auth')->group(function () {
-  Route::get('/admin/dashboard', [AuthController::class, 'adminDashboard'])->name('admin.dashboard');
-});
-
 // Manage Bookings (authenticated users only)
 Route::middleware('auth')->group(function () {
   Route::get('/manage-bookings', [AuthController::class, 'manageBookings'])->name('manage.bookings');
+});
+
+// Booking Promos (authenticated users only)
+Route::middleware('auth')->group(function () {
+  Route::get('/booking-promos', [AuthController::class, 'bookingPromos'])->name('landing.booking_promo');
 });
 
 // Authentication routes (API only for modals)

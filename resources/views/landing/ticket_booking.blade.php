@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Book a Ticket – VoyagePH</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+@extends('landing.layouts.app', ['active' => 'ticket_booking'])
+
+@section('title', 'Book a Ticket – VoyagePH')
+
+@push('styles')
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -381,15 +379,6 @@
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast .t-icon { font-size: 1rem; }
 
-    /* ── FOOTER ── */
-    footer { background: var(--ink); color: rgba(255,255,255,.55); padding: 28px 32px; }
-    .footer-inner { max-width: 1260px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
-    .footer-payments { display: flex; align-items: center; gap: 6px; }
-    .pay-badge { font-size: .65rem; font-weight: 800; padding: 3px 8px; border-radius: 4px; background: rgba(255,255,255,.1); color: rgba(255,255,255,.6); }
-    .footer-socials { display: flex; gap: 6px; }
-    .soc-btn { width: 30px; height: 30px; border-radius: 7px; background: rgba(255,255,255,.08); display: flex; align-items: center; justify-content: center; font-size: .7rem; color: rgba(255,255,255,.5); text-decoration: none; transition: all .18s; }
-    .soc-btn:hover { background: var(--gold); color: var(--ink); }
-
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       .booking-layout { grid-template-columns: 1fr; }
@@ -407,34 +396,9 @@
       .ticket-details { grid-template-columns: 1fr 1fr; }
     }
   </style>
-</head>
-<body>
+@endpush
 
-<!-- ═══ NAVBAR ═══ -->
-<!-- ═══ NAVBAR ═══ -->
-<nav id="nav">
-  <div class="nav-wrap">
-    <a class="logo" href="#">
-      <div class="logo-mark">
-        <i class="fas fa-bus"></i>
-      </div>
-      <span class="logo-wordmark">Voyage<span>PH</span></span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="{{ route('landing.home') }}">Home</a></li>
-      <li><a href="#" class="active">Book a Ticket</a></li>
-      <li><a href="{{ route('landing.booking_routes') }}">Routes</a></li>
-      <li><a href="#">Promos</a></li>
-      @auth
-      <li><a href="{{ route('manage.bookings') }}">Manage Bookings</a></li>
-      @endauth
-    </ul>
-    <div class="nav-right">
-      <button class="btn-nav">Log In</button>
-      <button class="btn-nav-solid">Register</button>
-    </div>
-  </div>
-</nav>
+@section('content')
 
 <!-- ═══ PAGE HEADER ═══ -->
 <div class="page-header">
@@ -1107,25 +1071,12 @@
   </div>
 </main>
 
-<!-- ═══ FOOTER ═══ -->
-<footer>
-  <div class="footer-inner">
-    <p style="font-size:.78rem;">© 2026 VoyagePH. All rights reserved.</p>
-    <div class="footer-payments">
-      <span style="font-size:.68rem;color:rgba(255,255,255,.25);margin-right:6px;">We accept</span>
-      <span class="pay-badge">GCash</span><span class="pay-badge">Maya</span>
-      <span class="pay-badge">Visa</span><span class="pay-badge">MC</span><span class="pay-badge">OTC</span>
-    </div>
-    <div class="footer-socials">
-      <a class="soc-btn" href="#">f</a><a class="soc-btn" href="#">𝕏</a>
-      <a class="soc-btn" href="#">in</a><a class="soc-btn" href="#">📷</a>
-    </div>
-  </div>
-</footer>
-
 <!-- ═══ TOAST ═══ -->
 <div class="toast" id="toast"><span class="t-icon" id="toast-icon">✓</span><span id="toast-msg">Done!</span></div>
 
+@endsection
+
+@push('scripts')
 <script>
 /* ════════════════════════════════════════
    STATE
@@ -1553,5 +1504,4 @@ window.addEventListener('load', () => {
   }, 350);
 });
 </script>
-</body>
-</html>
+@endpush

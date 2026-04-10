@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LOVO - Routes</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+@extends('landing.layouts.app', ['active' => 'booking_routes'])
+
+@section('title', 'Routes – VoyagePH')
+
+@push('styles')
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -451,23 +448,6 @@
     .reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s ease; }
     .reveal.in { opacity: 1; transform: none; }
 
-    /* ── FOOTER ── */
-    footer { background: var(--ink); color: rgba(255,255,255,.5); padding: 56px 32px 28px; }
-    .footer-inner { max-width: 1260px; margin: 0 auto; }
-    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
-    .footer-brand p { font-size: .82rem; line-height: 1.7; color: rgba(255,255,255,.38); margin-top: 16px; max-width: 260px; }
-    .footer-col h4 { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,.35); margin-bottom: 16px; }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .footer-col ul li a { text-decoration: none; color: rgba(255,255,255,.45); font-size: .83rem; transition: color .15s; }
-    .footer-col ul li a:hover { color: var(--gold-lt); }
-    .footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 28px; border-top: 1px solid rgba(255,255,255,.08); flex-wrap: wrap; gap: 16px; }
-    .footer-bottom p { font-size: .78rem; }
-    .footer-payments { display: flex; align-items: center; gap: 6px; }
-    .pay-badge { padding: 3px 9px; border-radius: 4px; border: 1px solid rgba(255,255,255,.12); font-size: .68rem; font-weight: 700; color: rgba(255,255,255,.55); }
-    .footer-socials { display: flex; gap: 8px; }
-    .soc-btn { width: 32px; height: 32px; border-radius: 7px; border: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; font-size: .78rem; color: rgba(255,255,255,.45); text-decoration: none; transition: all .18s; }
-    .soc-btn:hover { background: rgba(255,255,255,.08); color: #fff; }
-
     /* ── NO RESULTS ── */
     .no-results { text-align: center; padding: 60px 24px; display: none; }
     .no-results.show { display: block; }
@@ -475,37 +455,9 @@
     .no-results h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
     .no-results p { font-size: .87rem; color: var(--muted); }
   </style>
-</head>
-<body>
+@endpush
 
-<!-- ═══ NAVBAR ═══ -->
-<nav id="nav">
-  <div class="nav-wrap">
-    <a class="logo" href="index.html">
-      <div class="logo-mark">
-        <!-- Font Awesome Icon for logo -->
-        <i class="fas fa-bus" style="font-size: 24px; color: #d4a843;"></i>
-      </div>
-      <span class="logo-wordmark">Voyage<span>PH</span></span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="{{ route('landing.home') }}">Home</a></li>
-      <li><a href="{{ route('landing.ticket_booking') }}">Book a Ticket</a></li>
-      <li><a href="{{ route('landing.booking_routes') }}" class="active">Routes</a></li>
-      <li><a href="#">Promos</a></li>
-      @auth
-      <li><a href="{{ route('manage.bookings') }}">Manage Bookings</a></li>
-      @endauth
-    </ul>
-    <div class="nav-right">
-      <button class="btn-login">Log In</button>
-      <button class="btn-book" onclick="window.location='book-a-ticket.html'">
-        <!-- Font Awesome Icon for Book Now button -->
-        <i class="fas fa-ticket-alt" style="font-size: 14px;"></i> Book Now
-      </button>
-    </div>
-  </div>
-</nav>
+@section('content')
 
 <!-- ═══ PAGE HEADER ═══ -->
 <div class="page-header">
@@ -884,65 +836,9 @@
   </div>
 </div>
 
-<!-- ═══ FOOTER ═══ -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a class="logo" href="index.html" style="filter:brightness(1.2)">
-          <div class="logo-mark" style="border-color:rgba(212,168,67,.3)">
-            <i class="fas fa-bus" style="color:#d4a843;"></i>
-          </div>
-          <span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:800;color:#fff;">Voyage<span style="color:#d4a843">PH</span></span>
-        </a>
-        <p>Philippines' premier bus company — connecting cities with comfort, safety, and reliability since 2018.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Travel</h4>
-        <ul>
-          <li><a href="book-a-ticket.html">Book a Ticket</a></li>
-          <li><a href="routes.html">View Routes</a></li>
-          <li><a href="#">Promos & Deals</a></li>
-          <li><a href="#">Group Booking</a></li>
-          <li><a href="#">Schedule</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Account</h4>
-        <ul>
-          <li><a href="#">Register</a></li>
-          <li><a href="#">Log In</a></li>
-          <li><a href="#">My Bookings</a></li>
-          <li><a href="#">My Profile</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <ul>
-          <li><a href="#">About VoyagePH</a></li>
-          <li><a href="#">Contact Us</a></li>
-          <li><a href="#">Help / FAQ</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 VoyagePH. All rights reserved. Made with ❤️ in the Philippines.</p>
-      <div class="footer-payments">
-        <span style="font-size:.68rem;color:rgba(255,255,255,.25);margin-right:6px;">We accept</span>
-        <span class="pay-badge">GCash</span><span class="pay-badge">Maya</span><span class="pay-badge">Visa</span><span class="pay-badge">MC</span><span class="pay-badge">OTC</span>
-      </div>
-      <div class="footer-socials">
-        <a class="soc-btn" href="#"><i class="fab fa-facebook-f"></i></a>
-        <a class="soc-btn" href="#"><i class="fab fa-twitter"></i></a>
-        <a class="soc-btn" href="#"><i class="fab fa-linkedin-in"></i></a>
-        <a class="soc-btn" href="#"><i class="fab fa-instagram"></i></a>
-      </div>
-    </div>
-  </div>
-</footer>
+@endsection
 
+@push('scripts')
 <script>
 /* ── ROUTE DATA ── */
 const ROUTES = [
@@ -1192,5 +1088,4 @@ window.addEventListener('load', () => {
   }, 100);
 });
 </script>
-</body>
-</html>
+@endpush

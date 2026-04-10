@@ -32,26 +32,15 @@ class MaintenanceLog extends Model
         'cost'                 => 'decimal:2',
     ];
 
-    // ------------------------------------------------------------------
-    // RELATIONSHIPS
-    // ------------------------------------------------------------------
-
     public function bus(): BelongsTo
     {
         return $this->belongsTo(Bus::class);
     }
 
-    /**
-     * The admin/staff user who logged this entry.
-     */
     public function loggedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'logged_by');
     }
-
-    // ------------------------------------------------------------------
-    // ACCESSORS
-    // ------------------------------------------------------------------
 
     public function getFormattedCostAttribute(): string
     {
@@ -62,10 +51,6 @@ class MaintenanceLog extends Model
     {
         return $this->next_maintenance_due?->isPast() ?? false;
     }
-
-    // ------------------------------------------------------------------
-    // SCOPES
-    // ------------------------------------------------------------------
 
     public function scopeCompleted($query)
     {
@@ -82,3 +67,4 @@ class MaintenanceLog extends Model
         return $query->where('bus_id', $busId);
     }
 }
+

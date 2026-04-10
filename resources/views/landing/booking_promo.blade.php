@@ -1,16 +1,210 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Promos & Deals – VoyagePH</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="{{ asset('css/landing/booking_promo.css') }}">
-</head>
-<body>
+@extends('landing.layouts.app', ['active' => 'booking_promo'])
 
-<!-- ═══ NAVBAR ═══ -->
-<nav id="nav">
+@section('title', 'Promos & Deals – VoyagePH')
+
+@push('styles')
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #0e1117;
+      --ink-mid:   #1a2235;
+      --ink-soft:  #2e3a52;
+      --gold:      #b8912a;
+      --gold-lt:   #d4a843;
+      --gold-bg:   rgba(184,145,42,.08);
+      --gold-line: rgba(184,145,42,.2);
+      --red:       #c0392b;
+      --red-bg:    rgba(192,57,43,.08);
+      --bg:        #f9f7f4;
+      --bg-2:      #f2ede6;
+      --bg-3:      #ffffff;
+      --border:    #e4ddd3;
+      --border-dk: #ccc4b8;
+      --muted:     #7a7468;
+      --muted-lt:  #a09890;
+      --text:      #1a1612;
+      --nav-h:     70px;
+      --radius:    14px;
+      --shadow-sm: 0 2px 12px rgba(14,17,23,.06);
+      --shadow-md: 0 8px 32px rgba(14,17,23,.1);
+      --shadow-lg: 0 20px 60px rgba(14,17,23,.14);
+      --green:     #059669;
+      --green-bg:  rgba(5,150,105,.08);
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    /* ── NAVBAR ── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav-h); z-index: 900;
+      background: rgba(249,247,244,.92);
+      backdrop-filter: blur(18px) saturate(1.4);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+    }
+    .nav-wrap { max-width: 1260px; margin: 0 auto; height: 100%; display: flex; align-items: center; padding: 0 32px; }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; margin-right: 44px; }
+    .logo-mark { width: 38px; height: 38px; border-radius: 9px; background: var(--ink); display: flex; align-items: center; justify-content: center; }
+    .logo-mark svg { width: 20px; height: 20px; fill: none; stroke: var(--gold-lt); stroke-width: 1.8; stroke-linecap: round; }
+    .logo-wordmark { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 800; color: var(--ink); letter-spacing: -.3px; }
+    .logo-wordmark span { color: var(--gold); }
+    .nav-links { display: flex; list-style: none; gap: 2px; }
+    .nav-links a { text-decoration: none; color: var(--muted); font-size: .84rem; font-weight: 500; padding: 7px 14px; border-radius: 7px; transition: color .18s, background .18s; white-space: nowrap; position: relative; }
+    .nav-links a:hover { color: var(--ink); background: var(--bg-2); }
+    .nav-links a.active { color: var(--ink); font-weight: 600; }
+    .nav-links a.active::after { content: ''; position: absolute; bottom: -1px; left: 14px; right: 14px; height: 2px; background: var(--gold); border-radius: 2px; }
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    .btn-login { background: none; border: 1.5px solid var(--border-dk); color: var(--ink-soft); padding: 8px 18px; border-radius: 8px; font-size: .83rem; font-weight: 600; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all .18s; }
+    .btn-login:hover { border-color: var(--ink); color: var(--ink); }
+    .btn-book { background: var(--ink); color: #fff; border: none; padding: 9px 20px; border-radius: 8px; font-size: .83rem; font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all .2s; display: flex; align-items: center; gap: 6px; }
+    .btn-book:hover { background: var(--ink-mid); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(14,17,23,.2); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding-top: calc(var(--nav-h) + 60px);
+      padding-bottom: 64px;
+      padding-left: 32px; padding-right: 32px;
+      background: linear-gradient(160deg, #fff 0%, var(--bg) 100%);
+      position: relative; overflow: hidden;
+    }
+    .page-header::before {
+      content: ''; position: absolute; top: 0; right: 0;
+      width: 55%; height: 100%;
+      background: radial-gradient(ellipse 70% 70% at 80% 40%, rgba(184,145,42,.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .page-header::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background-image: radial-gradient(circle, rgba(184,145,42,.12) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.5) 40%, rgba(0,0,0,.5) 70%, transparent 100%);
+      pointer-events: none;
+    }
+    .ph-inner { max-width: 1260px; margin: 0 auto; position: relative; z-index: 1; }
+
+    .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: .75rem; color: var(--muted-lt); margin-bottom: 28px; }
+    .breadcrumb a { color: var(--muted); text-decoration: none; font-weight: 500; }
+    .breadcrumb a:hover { color: var(--gold); }
+    .breadcrumb .sep { color: var(--border-dk); }
+    .breadcrumb .cur { color: var(--gold); font-weight: 600; }
+
+    .ph-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: .72rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+    .ph-eyebrow::before { content: ''; width: 28px; height: 1.5px; background: var(--gold); }
+    .ph-heading { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 3.8vw, 3.2rem); font-weight: 800; line-height: 1.08; letter-spacing: -.4px; color: var(--ink); }
+    .ph-heading em { font-style: italic; color: var(--gold); }
+    .ph-sub { color: var(--muted); font-size: .95rem; line-height: 1.75; margin-top: 14px; max-width: 500px; }
+
+    /* ── COUNTDOWN TICKER ── */
+    .ticker-bar {
+      background: var(--ink);
+      padding: 12px 32px;
+      display: flex; align-items: center; justify-content: center; gap: 24px;
+      flex-wrap: wrap;
+    }
+    .ticker-label {
+      color: rgba(255,255,255,.6);
+      font-size: .72rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    }
+    .ticker-deals {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center;
+    }
+    .ticker-deal {
+      background: var(--gold-bg);
+      border: 1px solid var(--gold-line);
+      color: var(--gold-lt);
+      font-size: .78rem; font-weight: 700;
+      padding: 4px 12px; border-radius: 20px;
+      white-space: nowrap;
+    }
+    .ticker-sep { color: rgba(255,255,255,.15); font-size: .9rem; }
+    .countdown-wrap {
+      display: flex; align-items: center; gap: 6px; margin-left: 12px;
+    }
+    .cd-unit { text-align: center; }
+    .cd-num {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 6px; padding: 2px 8px;
+      font-size: .95rem; font-weight: 700; color: #fff;
+      min-width: 36px; display: block; text-align: center;
+      font-family: 'Playfair Display', serif;
+    }
+    .cd-label { font-size: .6rem; color: rgba(255,255,255,.4); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; display: block; }
+    .cd-colon { color: rgba(255,255,255,.3); font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
+
+    /* ── PROMO HERO / FEATURED BANNER ── */
+    .featured-section {
+      padding: 60px 32px 0;
+    }
+    .featured-inner { max-width: 1260px; margin: 0 auto; }
+
+    .section-title-row {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
+    }
+    .section-eyebrow {
+      font-size: .7rem; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 6px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-eyebrow::before { content: ''; width: 20px; height: 1.5px; background: var(--gold); }
+    .section-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 2.4vw, 2rem); font-weight: 800;
+      color: var(--ink); line-height: 1.1;
+    }
+    .section-heading em { font-style: italic; color: var(--gold); }
+    .see-all {
+      font-size: .82rem; font-weight: 600; color: var(--gold);
+      text-decoration: none; display: flex; align-items: center; gap: 5px;
+      white-space: nowrap; transition: gap .18s;
+    }
+    .see-all:hover { gap: 8px; }
+
+    /* Featured promo banner */
+    .featured-banner {
+      background: var(--ink);
+      border-radius: 20px;
+      padding: 52px 56px;
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: center; gap: 48px;
+      position: relative; overflow: hidden;
+    }
+    .featured-banner::before {
+      content: '';
+      position: absolute; top: -40%; right: 10%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(184,145,42,.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .featured-banner::after {
+      content: '';
+      position: absolute; bottom: -30%; left: -5%;
+      width: 340px; height: 340px;
+      background: radial-gradient(circle, rgba(255,255,255,.03) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    /* decorative grid lines on banner */
+    .banner-grid {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden; opacity: .05;
+    }
+
+    .fb-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(184,145,42,.15); border: 1px solid rgba(212,168,67,.3);
+      color: var(--gold-lt); font-size: .7rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 20px; margin-bottom: 20px;
+    }
+    .fb-badge::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gold-lt);
+      animation: pulse-dot 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: .4; transform: scale(.6); }
     }
@@ -574,35 +768,9 @@
       100% { background-position: 400px 0; }
     }
   </style>
-</head>
-<body>
+@endpush
 
-<!-- ═══ NAVBAR ═══ -->
-<nav id="nav">
-  <div class="nav-wrap">
-    <a class="logo" href="home-page.html">
-      <div class="logo-mark">
-        <svg viewBox="0 0 24 24"><path d="M3 14V8a2 2 0 012-2h14a2 2 0 012 2v6M3 14h18M3 14l-1 3h20l-1-3M7 14v2m10-2v2M6 10h12"/></svg>
-      </div>
-      <span class="logo-wordmark">Voyage<span>PH</span></span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="home-page.html">Home</a></li>
-      <li><a href="book-a-ticket.html">Book a Ticket</a></li>
-      <li><a href="routes.html">Routes</a></li>
-      <li><a href="#" class="active">Promos & Deals</a></li>
-      <li><a href="#">Schedule</a></li>
-      <li><a href="#">My Bookings</a></li>
-    </ul>
-    <div class="nav-right">
-      <button class="btn-login">Log In</button>
-      <button class="btn-book">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 14V8a2 2 0 012-2h14a2 2 0 012 2v6M3 14h18M3 14l-1 3h20l-1-3"/></svg>
-        Book Now
-      </button>
-    </div>
-  </div>
-</nav>
+@section('content')
 
 <!-- ═══ PROMO FLASH TICKER ═══ -->
 <div class="ticker-bar">
@@ -637,7 +805,7 @@
 <div class="page-header">
   <div class="ph-inner">
     <div class="breadcrumb">
-      <a href="home-page.html">Home</a>
+      <a href="{{ route('landing.home') }}">Home</a>
       <span class="sep">/</span>
       <span class="cur">Promos & Deals</span>
     </div>
@@ -690,7 +858,7 @@
         </div>
 
         <div class="fb-actions">
-          <button class="btn-gold" onclick="window.location.href='book-a-ticket.html'">
+          <button class="btn-gold" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 14V8a2 2 0 012-2h14a2 2 0 012 2v6M3 14h18M3 14l-1 3h20l-1-3"/></svg>
             Book This Deal
           </button>
@@ -785,7 +953,7 @@
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             Ends in 2 days
           </div>
-          <button class="card-cta" onclick="window.location.href='book-a-ticket.html'">Book Now</button>
+          <button class="card-cta" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">Book Now</button>
         </div>
       </div>
 
@@ -829,7 +997,7 @@
             <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Apr 14–20, 2026
           </div>
-          <button class="card-cta" onclick="window.location.href='book-a-ticket.html'">Book Now</button>
+          <button class="card-cta" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">Book Now</button>
         </div>
       </div>
 
@@ -873,7 +1041,7 @@
             <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Year-round
           </div>
-          <button class="card-cta" onclick="window.location.href='book-a-ticket.html'">Book Now</button>
+          <button class="card-cta" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">Book Now</button>
         </div>
       </div>
 
@@ -916,7 +1084,7 @@
             <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Year-round
           </div>
-          <button class="card-cta" onclick="window.location.href='book-a-ticket.html'">Book Now</button>
+          <button class="card-cta" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">Book Now</button>
         </div>
       </div>
 
@@ -960,7 +1128,7 @@
             <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Year-round
           </div>
-          <button class="card-cta" onclick="window.location.href='book-a-ticket.html'">Book Now</button>
+          <button class="card-cta" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">Book Now</button>
         </div>
       </div>
 
@@ -1006,7 +1174,7 @@
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             Ends Apr 30
           </div>
-          <button class="card-cta" onclick="window.location.href='book-a-ticket.html'">Book Now</button>
+          <button class="card-cta" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">Book Now</button>
         </div>
       </div>
 
@@ -1049,7 +1217,7 @@
             <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Year-round
           </div>
-          <button class="card-cta" onclick="window.location.href='book-a-ticket.html'">Book Now</button>
+          <button class="card-cta" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">Book Now</button>
         </div>
       </div>
 
@@ -1095,7 +1263,7 @@
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             Ends May 15
           </div>
-          <button class="card-cta" onclick="window.location.href='book-a-ticket.html'">Book Now</button>
+          <button class="card-cta" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">Book Now</button>
         </div>
       </div>
 
@@ -1138,7 +1306,7 @@
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             Ends Apr 30
           </div>
-          <button class="card-cta" onclick="window.location.href='book-a-ticket.html'">Book Now</button>
+          <button class="card-cta" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">Book Now</button>
         </div>
       </div>
 
@@ -1181,7 +1349,7 @@
             <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Year-round
           </div>
-          <button class="card-cta" onclick="window.location.href='book-a-ticket.html'">Book Now</button>
+          <button class="card-cta" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">Book Now</button>
         </div>
       </div>
 
@@ -1224,7 +1392,7 @@
             <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Your birthday month
           </div>
-          <button class="card-cta" onclick="window.location.href='book-a-ticket.html'">Book Now</button>
+          <button class="card-cta" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">Book Now</button>
         </div>
       </div>
 
@@ -1270,7 +1438,7 @@
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             Ends May 31
           </div>
-          <button class="card-cta" onclick="window.location.href='book-a-ticket.html'">Book Now</button>
+          <button class="card-cta" onclick="window.location.href='{{ route('landing.ticket_booking') }}'">Book Now</button>
         </div>
       </div>
 
@@ -1361,78 +1529,9 @@
   </div>
 </section>
 
-<!-- ═══ FOOTER ═══ -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a class="logo" href="home-page.html" style="filter:brightness(1.2)">
-          <div class="logo-mark" style="border-color:rgba(212,168,67,.3)">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#d4a843" stroke-width="1.8" stroke-linecap="round"><path d="M3 14V8a2 2 0 012-2h14a2 2 0 012 2v6M3 14h18M3 14l-1 3h20l-1-3M7 14v2m10-2v2M6 10h12"/></svg>
-          </div>
-          <span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-.3px;">Voyage<span style="color:#d4a843">PH</span></span>
-        </a>
-        <p>Philippines' premier bus company — connecting cities with comfort, safety, and reliability since 2018.</p>
-        <div class="footer-newsletter">
-          <p>Get promo alerts and travel updates:</p>
-          <div class="nl-row">
-            <input class="nl-input" type="email" placeholder="your@email.com"/>
-            <button class="nl-btn">Subscribe</button>
-          </div>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h4>Travel</h4>
-        <ul>
-          <li><a href="book-a-ticket.html">Book a Ticket</a></li>
-          <li><a href="routes.html">View Routes</a></li>
-          <li><a href="#">Promos & Deals</a></li>
-          <li><a href="#">Group Booking</a></li>
-          <li><a href="#">Schedule</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Account</h4>
-        <ul>
-          <li><a href="#">Register</a></li>
-          <li><a href="#">Log In</a></li>
-          <li><a href="#">My Bookings</a></li>
-          <li><a href="#">My Profile</a></li>
-          <li><a href="#">Notifications</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <ul>
-          <li><a href="#">About VoyagePH</a></li>
-          <li><a href="#">Contact Us</a></li>
-          <li><a href="#">Help / FAQ</a></li>
-          <li><a href="#">Cancellation Policy</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 VoyagePH. All rights reserved. Made with ❤️ in the Philippines.</p>
-      <div class="footer-payments">
-        <span style="font-size:.68rem;color:rgba(255,255,255,.25);margin-right:6px;">We accept</span>
-        <span class="pay-badge">GCash</span>
-        <span class="pay-badge">Maya</span>
-        <span class="pay-badge">Visa</span>
-        <span class="pay-badge">MC</span>
-        <span class="pay-badge">OTC</span>
-      </div>
-      <div class="footer-socials">
-        <a class="soc-btn" href="#">f</a>
-        <a class="soc-btn" href="#">𝕏</a>
-        <a class="soc-btn" href="#">in</a>
-        <a class="soc-btn" href="#">📷</a>
-      </div>
-    </div>
-  </div>
-</footer>
+@endsection
 
+@push('scripts')
 <script>
   /* ── COUNTDOWN TIMER ── */
   let endTime = Date.now() + (8 * 3600 + 34 * 60 + 17) * 1000;
@@ -1514,5 +1613,4 @@
     card.style.transitionDelay = `${i * 0.06}s`;
   });
 </script>
-</body>
-</html>
+@endpush

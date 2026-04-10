@@ -39,10 +39,6 @@ class MaintenanceLogFactory extends Factory
         ];
     }
 
-    // ------------------------------------------------------------------
-    // STATES
-    // ------------------------------------------------------------------
-
     public function scheduled(): static
     {
         return $this->state(fn () => [
@@ -69,3 +65,4 @@ class MaintenanceLogFactory extends Factory
         ]);
     }
 }
+

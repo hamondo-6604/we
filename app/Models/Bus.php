@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Bus extends Model
@@ -57,14 +58,24 @@ class Bus extends Model
         return $this->hasMany(MaintenanceLog::class);
     }
 
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
+    /**
+     * Amenities this bus offers, with optional per-seat-type and note via pivot.
+     */
+    public function amenities(): BelongsToMany
+    {
+        return $this->belongsToMany(Amenity::class, 'bus_amenities')
+                    ->withPivot(['seat_type_id', 'note']);
+    }
+
     // ------------------------------------------------------------------
     // ACCESSORS
     // ------------------------------------------------------------------
 
-    /**
-     * Count of currently available seats for a given trip.
-     * Usage: $bus->availableSeatsForTrip($tripId)
-     */
     public function availableSeatsForTrip(int $tripId): int
     {
         $bookedSeatIds = Booking::where('trip_id', $tripId)
@@ -82,11 +93,6 @@ class Bus extends Model
     // ------------------------------------------------------------------
 
     public function scopeActive($query)
-    {
-        return $query->where('status', 'active');
-    }
-
-    public function scopeAvailable($query)
     {
         return $query->where('status', 'active');
     }
